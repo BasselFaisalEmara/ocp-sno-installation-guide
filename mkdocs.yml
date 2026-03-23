@@ -1,0 +1,111 @@
+site_name: Single Node OpenShift (SNO) Installation Guide
+site_description: Complete step-by-step guide for deploying Single Node OpenShift with Bastion Host infrastructure services
+site_author: Bassel Emara
+site_url: ""
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  icon:
+    logo: material/cloud-braces
+    repo: fontawesome/brands/git-alt
+
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: "#"
+  generator: false
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Architecture Overview: architecture.md
+  - Bastion Host Setup:
+    - Overview: bastion-setup/index.md
+    - 1. Firewall Configuration: bastion-setup/firewall.md
+    - 2. DNS Server (BIND): bastion-setup/dns.md
+    - 3. DHCP Server: bastion-setup/dhcp.md
+    - 4. HAProxy Load Balancer: bastion-setup/haproxy.md
+  - OpenShift Installation:
+    - Overview: openshift-install/index.md
+    - 1. Prerequisites & Client Tools: openshift-install/prerequisites.md
+    - 2. Installation Configuration: openshift-install/install-config.md
+    - 3. Bootstrap & Installation: openshift-install/bootstrap.md
+  - Post-Installation:
+    - Overview: post-install/index.md
+    - Validation & Smoke Tests: post-install/validation.md
+    - Troubleshooting: post-install/troubleshooting.md
+
+extra_css:
+  - assets/custom.css
+
+docs_dir: 'src'
+site_dir: 'site'
