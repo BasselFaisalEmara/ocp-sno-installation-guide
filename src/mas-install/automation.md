@@ -79,7 +79,31 @@ podman run -ti --rm -v ~/:/mnt/home --pull always quay.io/ibmmas/cli
 
 ---
 
-## 3.4 — Execute the MAS Installer
+## 3.4 — Copy the License File into the Container
+
+Once inside the container, copy the MAS license file from your Bastion host using `scp`. The Bastion's **external IP** is used because the container (with `--network host`) shares the host's network:
+
+```bash
+scp 10.1.1.30:/root/license.dat .
+```
+
+You will be prompted to accept the SSH host key and enter the Bastion root password:
+
+```text
+The authenticity of host '10.1.1.30 (10.1.1.30)' can't be established.
+ED25519 key fingerprint is SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.1.1.30' (ED25519) to the list of known hosts.
+root@10.1.1.30's password:
+license.dat                                     100%  XXX     X.XKB/s   00:00
+```
+
+!!! note
+    Replace `10.1.1.30` with your Bastion's actual external IP address. The license file will be copied to the current directory inside the container.
+
+---
+
+## 3.5 — Execute the MAS Installer
 
 Once inside the container shell, trigger the interactive installation wizard:
 
@@ -122,7 +146,7 @@ The installer will continue with questions to tailor your deployment. Answer the
 
 ---
 
-## 3.5 — Monitor via Tekton Pipelines
+## 3.6 — Monitor via Tekton Pipelines
 
 The CLI will install the **OpenShift Pipelines Operator (Tekton)** automatically and spin up PipelineRuns to execute your configuration.
 
