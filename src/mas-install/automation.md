@@ -10,91 +10,104 @@ To simplify this, IBM provides an official DevOps automation container (`quay.io
 
 ---
 
-## 3.1 — Install Container Runtime
+## 3.1 — Install Podman
 
-The IBM MAS CLI runs inside a container. Ensure either **Podman** or **Docker** is installed on the Bastion host:
+The IBM MAS CLI runs inside a container. Install **Podman** on the Bastion host:
 
 ```bash
-# Install Podman (recommended for RHEL)
 dnf install podman -y
-
-# Verify
-podman --version
 ```
 
-!!! tip "Docker vs Podman"
-    All `podman` commands below are interchangeable with `docker`. On RHEL 8/9, Podman is pre-installed or available natively.
+Expected output:
+```text
+Package podman-2:5.1.2-1.el9.x86_64 is already installed.
+Dependencies resolved.
+================================================================================
+ Package          Architecture     Version              Repository
+================================================================================
+Upgrading:
+ podman           x86_64           2:5.2.2-1.el9        appstream
 
----
+Transaction Summary
+================================================================================
+Upgrade  1 Package
 
-## 3.2 — Prepare the MAS CLI Container
-
-Pull the official IBM MAS CLI container image and create a working instance:
-
-```bash
-mkdir ~/sno
-cd ~/sno
-podman pull quay.io/ibmmas/cli
-```
-
-Start the container in detached mode:
-
-```bash
-podman run -dit --name mas-installer quay.io/ibmmas/cli:latest bash
-```
-
-Create a configuration directory inside the container:
-
-```bash
-podman exec -it mas-installer bash -c "mkdir /mascli/masconfig"
+...
+Complete!
 ```
 
 ---
 
-## 3.3 — Inject Credentials
+## 3.2 — Get the OpenShift Login Token
 
-The automated installer requires the Red Hat Pull Secret and the IBM MAS License to proceed. We will inject the files you downloaded during the previous steps directly into the container.
+The MAS CLI container needs to authenticate with the OpenShift cluster API. Retrieve, in advance, the login token from the Web Console.
 
-```bash
-# Assuming you saved the license in ~/mas-install/licenses/mas-license.dat
-# Assuming your pull secret is at ~/pull-secret.json
-
-podman cp ~/pull-secret.json mas-installer:/mascli/masconfig/pull-secret
-podman cp ~/mas-install/licenses/mas-license.dat mas-installer:/mascli/masconfig/license.dat
-```
-
----
-
-## 3.4 — Authenticate with OpenShift
-
-The container needs authorized access to the OpenShift cluster API. You can extract the `kube:admin` token from the web console.
-
-1. Log into the **OpenShift Web Console**.
+1. Log into the **OpenShift Web Console** (`https://console-openshift-console.apps.sno.ocp.local`).
 2. Click your username (`kubeadmin`) in the top right corner.
-3. Select **Copy login command** and authenticate.
-4. Copy the resulting `oc login --token=...` command.
-
-Execute that command directly inside the container instance:
+3. Select **Copy login command**.
+4. Authenticate again if prompted, then click **Display Token**.
+5. Copy the **full `oc login` command** shown under "Log in with this token":
 
 ```bash
-podman exec -it mas-installer bash
-# Inside the container:
-oc login --token=sha256~... --server=https://api.sno.ocp.local:6443 --insecure-skip-tls-verify
+oc login --token=sha256~xxxxxxxxxxxxxxxxxxxxxxxxxxxx --server=https://api.sno.ocp.local:6443
 ```
+
+!!! tip "Keep this token handy"
+    You will need the **Server URL** and **Login Token** in the next step when the `mas install` wizard prompts you.
 
 ---
 
-## 3.5 — Execute the Installer
+## 3.3 — Launch the MAS CLI Container
 
-While still inside the container's bash shell, trigger the interactive installation wizard:
+Run the official IBM MAS CLI container interactively. The `-v ~/:/mnt/home` flag mounts your home directory into the container so it can access your license and pull-secret files:
+
+```bash
+podman run -ti --rm -v ~/:/mnt/home --pull always quay.io/ibmmas/cli
+```
+
+!!! warning "Network Isolation Issue"
+    If the container **cannot reach the OpenShift API** (e.g., connection timeouts or DNS failures during `mas install`), the default Podman network namespace is isolated from the host network.
+
+    **Fix:** Exit the container and restart it with `--network host`:
+
+    ```bash
+    exit
+    podman run -ti --rm --network host -v ~/:/mnt/home --pull always quay.io/ibmmas/cli
+    ```
+
+    This allows the container to use the Bastion's network stack directly, resolving DNS and reaching `api.sno.ocp.local:6443`.
+
+---
+
+## 3.4 — Execute the MAS Installer
+
+Once inside the container shell, trigger the interactive installation wizard:
 
 ```bash
 mas install
 ```
 
-### Critical Prompts to Expect:
+### Step 1: Set Target OpenShift Cluster
 
-The installer will ask questions to tailor your deployment. Answer them carefully:
+The installer will first prompt you to connect to your cluster:
+
+```text
+IBM Maximo Application Suite Admin CLI v19.2.1
+Powered by https://github.com/ibm-mas/ansible-devops/ and https://tekton.dev/
+
+1) Set Target OpenShift Cluster
+Server URL: https://api.sno.ocp.local:6443
+Login Token: ****************************************
+Disable TLS Verify? [y/n] y
+```
+
+* **Server URL:** `https://api.sno.ocp.local:6443`
+* **Login Token:** Paste the token you copied in step 3.2
+* **Disable TLS Verify:** `y` (required for self-signed certificates on SNO)
+
+### Step 2: MAS Configuration Prompts
+
+The installer will continue with questions to tailor your deployment. Answer them carefully:
 
 * **MAS Instance ID:** `sno`
 * **Use online catalog?** `y`
@@ -103,13 +116,13 @@ The installer will ask questions to tailor your deployment. Answer them carefull
 * **Customize database settings:** `y`
   * Choose to generate a dedicated JDBC configuration for Manage.
 * **Configure Storage Class Usage:**
-  * When prompted for the ReadWriteOnce (RWO) storage class, enter **`lvm-vg1`** (from our LVM operator).
+  * When prompted for the ReadWriteOnce (RWO) storage class, enter **`lvms-vg1`** (from our LVM operator).
 * **Configure IBM Container Registry:** Paste the **Entitlement Key** you generated earlier.
-* **Configure Product License:** Provide the path to the injected license (`/mascli/masconfig/license.dat`).
+* **Configure Product License:** Provide the path to the license file (`/mnt/home/license.dat` — since your home directory is mounted at `/mnt/home`).
 
 ---
 
-## 3.6 — Monitor via Tekton Pipelines
+## 3.5 — Monitor via Tekton Pipelines
 
 The CLI will install the **OpenShift Pipelines Operator (Tekton)** automatically and spin up PipelineRuns to execute your configuration.
 
