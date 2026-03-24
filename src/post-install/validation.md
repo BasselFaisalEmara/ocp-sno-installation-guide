@@ -160,7 +160,7 @@ HTTP/1.1 200 OK
 
 ## 7. Storage (Image Registry)
 
-If you have already configured the Image Registry using the LVM PVC method described in the [MAS Installation — LVM Storage Operator](../mas-install/storage.md#16--enable-the-openshift-image-registry) section, the registry should already be active.
+If you have already configured the Image Registry using the LVM PVC method described in the [MAS Installation — LVM Storage Operator](../mas-install/storage.md#17--enable-the-openshift-image-registry) section, the registry should already be active.
 
 Verify that it is running:
 
@@ -176,7 +176,7 @@ oc get pvc -n openshift-image-registry
 
 !!! warning "PVC Stuck in Pending?"
 
-    If the PVC status shows `Pending`, the access mode may be incorrect. See the [Image Registry PVC Troubleshooting](../mas-install/storage.md#18--troubleshoot-image-registry-pvc) section for the fix.
+    If the PVC status shows `Pending`, the access mode may be incorrect. See the [Image Registry PVC Troubleshooting](../mas-install/storage.md#19--troubleshoot-image-registry-pvc) section for the fix.
 
 ---
 

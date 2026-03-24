@@ -116,44 +116,94 @@ lvm-vg1-snapshot     snap.topolvm.io     Delete          WaitForFirstConsumer   
 
 ---
 
-## 1.6 — Enable the OpenShift Image Registry
+## 1.6 — Create the Image Registry PVC
 
-By default, Single Node OpenShift deployments on bare metal/vSphere are provisioned with the local image registry completely disabled. **MAS requires this registry to be active for its internal container pipelines.**
+Before enabling the registry, we must prepare a PersistentVolumeClaim backed by our LVM storage so the registry has somewhere to store images.
 
-Since we just provisioned dynamic LVM storage, we can now safely enable the registry.
+1. Create the PVC manifest file:
 
-1. SSH into the Bastion and run the following command to edit the registry config:
+    ```bash
+    vi registry-pv.yaml
+    ```
 
-```bash
-oc edit configs.imageregistry/cluster
-```
+2. Paste the following content:
 
-2. Make three specific modifications in the YAML:
-   * **Change** `managementState: Removed` to `managementState: Managed`
-   * **Change** `rolloutStrategy: RollingUpdate` to `rolloutStrategy: Recreate`
-   * **Replace** the empty `storage: {}` block with a dynamic PVC claim:
-   ```yaml
-   storage:
-     pvc:
-       claim: ''
-   ```
+    ```yaml
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: image-registry-storage
+      namespace: openshift-image-registry
+      annotations:
+        imageregistry.openshift.io: 'true'
+        volume.beta.kubernetes.io/storage-provisioner: topolvm.cybozu.com
+        volume.kubernetes.io/storage-provisioner: topolvm.cybozu.com
+      finalizers:
+        - kubernetes.io/pvc-protection
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 200Gi
+      storageClassName: lvms-vg1
+      volumeMode: Filesystem
+    ```
 
-3. Save and quit the editor. The registry operator will automatically detect the change, request a PV from the LVM Storage Operator, and start the registry pods.
+3. Apply it:
 
-Verify with:
+    ```bash
+    oc create -f registry-pv.yaml
+    ```
 
-```bash
-oc get pods -n openshift-image-registry
-```
+    Expected output:
+    ```text
+    persistentvolumeclaim/image-registry-storage created
+    ```
 
 ---
 
-## 1.7 — Set LVM StorageClass as Default
+## 1.7 — Enable the OpenShift Image Registry
+
+By default, Single Node OpenShift deployments on bare metal/vSphere have the local image registry completely disabled. **MAS requires this registry to be active for its internal container pipelines.**
+
+Now that the PVC is ready, edit the registry operator configuration to enable it:
+
+```bash
+oc edit configs.imageregistry.operator.openshift.io
+```
+
+Make three specific modifications in the YAML editor:
+
+   * **Change** `managementState: Removed` → `managementState: Managed`
+   * **Change** `rolloutStrategy: RollingUpdate` → `rolloutStrategy: Recreate`
+   * **Replace** the empty `storage: {}` block with:
+
+```yaml
+storage:
+  pvc:
+    claim: ''
+```
+
+Save and quit the editor. The registry operator will bind the PVC we created and start the registry pods.
+
+Verify:
+
+```bash
+oc get pods -n openshift-image-registry
+oc get pvc -n openshift-image-registry
+```
+
+The PVC should show as **Bound** and the registry pods should be **Running**.
+
+---
+
+## 1.8 — Set LVM StorageClass as Default
 
 MAS and its dependencies expect a **default** `StorageClass` to be available. If the LVM StorageClass is not already marked as default, set it now:
 
 ```bash
-oc patch storageclass lvm-vg1 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+oc patch storageclass lvms-vg1 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 Verify:
@@ -162,46 +212,27 @@ Verify:
 oc get storageclasses
 ```
 
-You should see `(default)` next to `lvm-vg1`.
+You should see `(default)` next to `lvms-vg1`.
 
 ---
 
-## 1.8 — Troubleshoot Image Registry PVC
+## 1.9 — Troubleshoot Image Registry PVC
 
-If the `image-registry-storage` PVC is stuck in **Pending** status, it is usually caused by the PVC requesting `ReadWriteMany` (RWX) access mode, which LVM does not support. Follow these steps to fix it:
+If the `image-registry-storage` PVC is stuck in **Pending** status after enabling the registry, it is usually caused by the PVC requesting `ReadWriteMany` (RWX) access mode, which LVM does not support.
 
 1. Check the PVC status:
     ```bash
     oc get pvc -n openshift-image-registry
     ```
 
-2. If status is `Pending`, delete the existing PVC and recreate it with `ReadWriteOnce`:
+2. If status is `Pending`, delete the existing PVC:
     ```bash
     oc delete pvc image-registry-storage -n openshift-image-registry
     ```
 
-3. Create a corrected PVC:
-    ```yaml
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: image-registry-storage
-      namespace: openshift-image-registry
-      annotations:
-        imageregistry.openshift.io: 'true'
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Gi
-      storageClassName: lvm-vg1
-      volumeMode: Filesystem
-    ```
-
-4. Apply it:
+3. Recreate it using the corrected `registry-pv.yaml` from section 1.6 above:
     ```bash
-    oc apply -f image-registry-pvc.yaml
+    oc create -f registry-pv.yaml
     ```
 
 The PVC should immediately transition to **Bound** status.
@@ -212,3 +243,4 @@ The PVC should immediately transition to **Bound** status.
 ---
 
 **Next:** [:octicons-arrow-right-24: 2. Entitlement & License File](licensing.md)
+
