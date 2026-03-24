@@ -107,6 +107,7 @@ nav:
     - Overview: mas-install/index.md
     - 1. LVM Storage Operator: mas-install/storage.md
     - 2. Entitlement & License: mas-install/licensing.md
+    - 3. Automated Deployment: mas-install/automation.md
 
 extra_css:
   - assets/custom.css

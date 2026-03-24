@@ -57,7 +57,7 @@ The Bastion Host acts as the **gateway and infrastructure services provider** fo
     - `ens192` → External network (`10.1.1.0/24`)
     - `ens224` → Internal network (`192.168.83.0/24`)
 - [x] **Bare-metal server or VM** for the SNO node with minimum:
-    - 8 vCPU, 32 GB RAM, 120 GB disk
+    - 16 vCPU, 64 GB RAM, 120 GB OS disk + 500 GB secondary disk (SSD preferred)
     - Single NIC on the internal network
 - [x] **Red Hat pull secret** from [console.redhat.com](https://console.redhat.com/openshift/install/pull-secret)
 - [x] **Internet access** (direct or via proxy) from the Bastion Host
@@ -94,6 +94,14 @@ The guide is organized into logical phases:
     Validate the cluster, run smoke tests, and troubleshoot common issues.
 
     [:octicons-arrow-right-24: Validate Cluster](post-install/index.md)
+
+-   :material-ibm:{ .lg .middle } **MAS Installation**
+
+    ---
+
+    Prepare storage, licensing, and deploy IBM Maximo Application Suite via the CLI automation tool.
+
+    [:octicons-arrow-right-24: Prepare for MAS](mas-install/index.md)
 
 </div>
 

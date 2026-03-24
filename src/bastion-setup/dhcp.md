@@ -15,7 +15,7 @@ sequenceDiagram
     participant SNO as sno1 (PXE Boot)
     participant DHCP as Bastion (DHCP :67)
 
-    SNO->>DHCP: DHCPDISCOVER (MAC: 00:50:56:3c:dd:54)
+    SNO->>DHCP: DHCPDISCOVER (MAC: 00:0c:29:3e:a7:1c)
     DHCP-->>SNO: DHCPOFFER (192.168.83.20)
     SNO->>DHCP: DHCPREQUEST
     DHCP-->>SNO: DHCPACK (Lease confirmed)
@@ -154,7 +154,7 @@ Your training repository includes two DHCP configuration variants:
     Key differences:
 
     - Includes `option space pxelinux` for PXE boot
-    - MAC: `00:50:56:3c:dd:54` (VMware format)
+    - MAC: `00:0c:29:3e:a7:1c` (VMware format)
 
 === "KVM/libvirt (dhcpd_SNO.conf)"
 

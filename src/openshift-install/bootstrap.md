@@ -8,11 +8,11 @@ This is the final installation phase. Boot the SNO node from the prepared ISO an
 
 ---
 
-## 3.1 — Boot the SNO Node
+## 3.1 — Confirm SNO Node is Booted
 
-1. **Attach the ISO** to the SNO node's virtual CD/DVD drive (VMware) or pass it via `--cdrom` (KVM/libvirt)
-2. **Set boot order** to boot from the CD/DVD first
-3. **Power on** the VM / server
+If you followed [Phase 2 — Assisted Installer Setup](install-config.md), the SNO node should already be booted from the Discovery ISO and visible in the Red Hat Hybrid Cloud Console.
+
+Once the host appears as **Ready** in the console, click **Install cluster** to begin the automated installation process.
 
 The node will:
 

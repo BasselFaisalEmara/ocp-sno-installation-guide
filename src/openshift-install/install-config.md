@@ -35,7 +35,25 @@ Click **Next** to proceed.
 
 ---
 
-## 2.3 — Add Host and Generate Discovery ISO
+## 2.3 — Networking Configuration
+
+The Assisted Installer may present a **Networking** configuration step. Verify or set the following values:
+
+| Setting | Value |
+|---------|-------|
+| **Machine CIDR** | `192.168.83.0/24` (auto-detected from DHCP) |
+| **Service Network** | `172.30.0.0/16` (default — leave unchanged) |
+| **Cluster Network** | `10.128.0.0/14` (default — leave unchanged) |
+| **Network Type** | `OVNKubernetes` |
+
+!!! note
+    For SNO, the Assisted Installer typically auto-populates these from the DHCP-assigned address. Only modify them if your network layout differs from the defaults.
+
+Click **Next** to proceed.
+
+---
+
+## 2.4 — Add Host and Generate Discovery ISO
 
 1. On the **Host discovery** step, click the **Add hosts** button.
 2. When prompted for SSH keys, paste the contents of your `id_ed25519.pub` public key that you generated on the Bastion host in the previous step.
@@ -44,7 +62,7 @@ Click **Next** to proceed.
 
 ---
 
-## 2.4 — Upload ISO to VMware ESXi
+## 2.5 — Upload ISO to VMware ESXi
 
 We now need to attach this Discovery ISO to the SNO virtual machine.
 
@@ -55,7 +73,7 @@ We now need to attach this Discovery ISO to the SNO virtual machine.
 
 ---
 
-## 2.5 — Boot the SNO Node
+## 2.6 — Boot the SNO Node
 
 1. In the ESXi Client, select your SNO virtual machine (e.g., `SNO-Bassel`) and click **Edit settings**.
 2. Locate the **CD/DVD drive 1**.
@@ -65,7 +83,7 @@ We now need to attach this Discovery ISO to the SNO virtual machine.
 
 ---
 
-## 2.6 — Troubleshooting Discovery Connectivity
+## 2.7 — Troubleshooting Discovery Connectivity
 
 The SNO node will boot the ISO, acquire an IP via DHCP, and attempt to register itself back to the Red Hat Hybrid Cloud Console. 
 
@@ -77,26 +95,18 @@ To verify, open the VM console in ESXi and test connectivity:
 curl -4 -I https://console.redhat.com
 ```
 
-If it fails to connect, the `firewalld` NAT policy on your Bastion host is not bridging the zones correctly. Apply the following fix on your **Bastion host**:
+If it fails to connect, the `firewalld` NAT policy on your Bastion host is not bridging the zones correctly.
 
-```bash
-# 1. Create a new routing policy bridging the zones
-sudo firewall-cmd --new-policy int_to_ext --permanent
+!!! tip "Already configured?"
+    If you followed the [Firewall Configuration](../bastion-setup/firewall.md#13--create-routing-policy-internal--external) guide earlier and created the `in_out_policy`, this should already be working. Verify with:
 
-# 2. Tell the policy that traffic comes IN from the internal zone (SNO)
-sudo firewall-cmd --policy int_to_ext --add-ingress-zone internal --permanent
+    ```bash
+    firewall-cmd --info-policy=in_out_policy
+    ```
 
-# 3. Tell the policy that traffic goes OUT to the external zone (Internet)
-sudo firewall-cmd --policy int_to_ext --add-egress-zone external --permanent
+    If the policy does not exist, go back and create it as described in [Step 1.3 — Create Routing Policy](../bastion-setup/firewall.md#13--create-routing-policy-internal--external).
 
-# 4. Set the policy to ACCEPT and route the traffic
-sudo firewall-cmd --policy int_to_ext --set-target ACCEPT --permanent
-
-# 5. Reload the firewall to apply the new bridge
-sudo firewall-cmd --reload
-```
-
-After applying these firewall rules, the SNO node should successfully reach the internet, phone home, and appear as a **Ready** host in your Red Hat web console!
+After verifying the firewall policy, the SNO node should successfully reach the internet, phone home, and appear as a **Ready** host in your Red Hat web console!
 
 !!! success "Checkpoint"
 

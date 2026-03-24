@@ -68,6 +68,23 @@ nmcli device status
 
 You should see both `ens192` (external) and `ens224` (internal) interfaces listed.
 
+### Verify NTP Time Synchronization
+
+Clock skew between the Bastion and the SNO node can cause `x509: certificate has expired` errors during installation. Ensure Chrony (NTP) is syncing correctly:
+
+```bash
+# Check chrony status
+chronyc tracking
+timedatectl
+```
+
+If NTP is not synchronized, enable it:
+
+```bash
+systemctl enable --now chronyd
+timedatectl set-ntp true
+```
+
 ### Configure Network Interfaces (`nmtui`)
 
 It is critical to configure the interfaces correctly so the Bastion uses its own DNS server and maintains static IPs. Run the NetworkManager Text User Interface:

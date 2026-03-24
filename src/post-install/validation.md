@@ -11,7 +11,7 @@ After successful installation, run through these validation checks to confirm ev
 ## Pre-Flight: Set KUBECONFIG
 
 ```bash
-export KUBECONFIG=~/ocp-install/auth/kubeconfig
+export KUBECONFIG=/root/kubeconfig
 ```
 
 ---
@@ -160,23 +160,23 @@ HTTP/1.1 200 OK
 
 ## 7. Storage (Image Registry)
 
-By default, the image registry operator is set to `Removed` on bare-metal/SNO. To enable it with `emptyDir` (lab/dev only):
+If you have already configured the Image Registry using the LVM PVC method described in the [MAS Installation — LVM Storage Operator](../mas-install/storage.md#16--enable-the-openshift-image-registry) section, the registry should already be active.
 
-```bash
-oc patch configs.imageregistry.operator.openshift.io cluster \
-  --type merge \
-  --patch '{"spec":{"managementState":"Managed","storage":{"emptyDir":{}}}}'
-```
-
-!!! danger "Not for Production"
-
-    `emptyDir` storage is **ephemeral** — registry data is lost on pod restart. For production, configure persistent storage (NFS, local-storage, etc.).
-
-### Verify
+Verify that it is running:
 
 ```bash
 oc get pods -n openshift-image-registry
 ```
+
+Check that the `image-registry-storage` PVC is **Bound**:
+
+```bash
+oc get pvc -n openshift-image-registry
+```
+
+!!! warning "PVC Stuck in Pending?"
+
+    If the PVC status shows `Pending`, the access mode may be incorrect. See the [Image Registry PVC Troubleshooting](../mas-install/storage.md#18--troubleshoot-image-registry-pvc) section for the fix.
 
 ---
 

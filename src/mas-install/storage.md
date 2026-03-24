@@ -116,4 +116,99 @@ lvm-vg1-snapshot     snap.topolvm.io     Delete          WaitForFirstConsumer   
 
 ---
 
+## 1.6 — Enable the OpenShift Image Registry
+
+By default, Single Node OpenShift deployments on bare metal/vSphere are provisioned with the local image registry completely disabled. **MAS requires this registry to be active for its internal container pipelines.**
+
+Since we just provisioned dynamic LVM storage, we can now safely enable the registry.
+
+1. SSH into the Bastion and run the following command to edit the registry config:
+
+```bash
+oc edit configs.imageregistry/cluster
+```
+
+2. Make three specific modifications in the YAML:
+   * **Change** `managementState: Removed` to `managementState: Managed`
+   * **Change** `rolloutStrategy: RollingUpdate` to `rolloutStrategy: Recreate`
+   * **Replace** the empty `storage: {}` block with a dynamic PVC claim:
+   ```yaml
+   storage:
+     pvc:
+       claim: ''
+   ```
+
+3. Save and quit the editor. The registry operator will automatically detect the change, request a PV from the LVM Storage Operator, and start the registry pods.
+
+Verify with:
+
+```bash
+oc get pods -n openshift-image-registry
+```
+
+---
+
+## 1.7 — Set LVM StorageClass as Default
+
+MAS and its dependencies expect a **default** `StorageClass` to be available. If the LVM StorageClass is not already marked as default, set it now:
+
+```bash
+oc patch storageclass lvm-vg1 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+Verify:
+
+```bash
+oc get storageclasses
+```
+
+You should see `(default)` next to `lvm-vg1`.
+
+---
+
+## 1.8 — Troubleshoot Image Registry PVC
+
+If the `image-registry-storage` PVC is stuck in **Pending** status, it is usually caused by the PVC requesting `ReadWriteMany` (RWX) access mode, which LVM does not support. Follow these steps to fix it:
+
+1. Check the PVC status:
+    ```bash
+    oc get pvc -n openshift-image-registry
+    ```
+
+2. If status is `Pending`, delete the existing PVC and recreate it with `ReadWriteOnce`:
+    ```bash
+    oc delete pvc image-registry-storage -n openshift-image-registry
+    ```
+
+3. Create a corrected PVC:
+    ```yaml
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: image-registry-storage
+      namespace: openshift-image-registry
+      annotations:
+        imageregistry.openshift.io: 'true'
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: lvm-vg1
+      volumeMode: Filesystem
+    ```
+
+4. Apply it:
+    ```bash
+    oc apply -f image-registry-pvc.yaml
+    ```
+
+The PVC should immediately transition to **Bound** status.
+
+!!! warning "Still Not Bound?"
+    If the PVC remains in Pending, the LVM thin pool may be full or misconfigured. Try uninstalling and reinstalling the LVM Operator, then wiping and re-adding the disk.
+
+---
+
 **Next:** [:octicons-arrow-right-24: 2. Entitlement & License File](licensing.md)
