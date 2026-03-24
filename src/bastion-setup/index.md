@@ -68,6 +68,39 @@ nmcli device status
 
 You should see both `ens192` (external) and `ens224` (internal) interfaces listed.
 
+### Configure Network Interfaces (`nmtui`)
+
+It is critical to configure the interfaces correctly so the Bastion uses its own DNS server and maintains static IPs. Run the NetworkManager Text User Interface:
+
+```bash
+nmtui
+```
+
+**1. Configure the External Interface (`ens192`)**
+
+1. Select **Edit a connection** from the main menu.
+2. Select the external interface (`ens192`) from the list and choose **&lt;Edit...&gt;**.
+3. Under **IPv4 CONFIGURATION**, change the **DNS servers** to point to the local loopback address: `127.0.0.1`.
+4. Scroll down and check the box for **`[X] Ignore automatically obtained DNS parameters`**. This prevents DHCP from overwriting your custom DNS settings.
+5. Select **&lt;OK&gt;** to save.
+
+**2. Configure the Internal Interface (`ens224`)**
+
+1. Back in the connection list, select the internal interface (`ens224`) and choose **&lt;Edit...&gt;**.
+2. Change the **IPv4 CONFIGURATION** to **&lt;Manual&gt;**.
+3. Select **&lt;Show&gt;** to expand the IPv4 settings and add the internal IP address (`192.168.83.10/24`).
+4. Select **&lt;OK&gt;** to save.
+5. Select **&lt;Back&gt;** and then **&lt;Quit&gt;** to exit the utility.
+
+**3. Apply the Changes**
+
+Restart the network connections to apply the new configurations:
+
+```bash
+nmcli connection down ens192 && nmcli connection up ens192
+nmcli connection down ens224 && nmcli connection up ens224
+```
+
 ---
 
 ## Next Steps

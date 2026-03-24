@@ -103,24 +103,64 @@ An SSH key is needed to access the CoreOS-based SNO node for debugging:
 
 ```bash
 ssh-keygen -t ed25519 -N ''
+ls .ssh/
+cat .ssh/id_ed25519.pub
 ```
 
-This generates:
+Expected output and troubleshooting:
 
-| File | Purpose |
-|------|---------|
-| `~/.ssh/id_ed25519` | Private key (keep secure) |
-| `~/.ssh/id_ed25519.pub` | Public key (injected into install-config) |
+```text
+[root@bastion serveradmin]# ssh-keygen -t ed25519 -N ''
+ls .ssh/
+cat .ssh/id_ed25519.pub
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/root/.ssh/id_ed25519): 
+Your identification has been saved in /root/.ssh/id_ed25519
+Your public key has been saved in /root/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:4m1BntQDLp8dDiReSRAyYEIv2r2T7QDEOZe5u/rJPYI root@bastion.ocp.local
+The key's randomart image is:
++--[ED25519 256]--+
+|o.o.o ++=.       |
+| +.. * =.o       |
+| .=.+ o = +      |
+|.o.+ . * * o     |
+|. o o . S o      |
+|   . * o .       |
+|   .* o o        |
+|  E..B..         |
+|  .o=.o.         |
++----[SHA256]-----+
+ls: cannot access '.ssh/': No such file or directory
+cat: .ssh/id_ed25519.pub: No such file or directory
+```
 
-### View the Public Key
+If you receive the `No such file or directory` error as shown above, it means you are executing the command outside of the root home directory. You must explicitly reference the correct `~/.ssh` path.
+
+### View the Generated Files and Public Key
+
+Execute the following commands to locate and view the key:
 
 ```bash
+ls -lrth .ssh
+ls -la ~/.ssh
 cat ~/.ssh/id_ed25519.pub
 ```
 
-<div class="cmd-output">
+Expected output:
+
+```text
+[root@bastion serveradmin]# ls -lrth .ssh
+ls: cannot access '.ssh': No such file or directory
+[root@bastion serveradmin]# ls -la ~/.ssh
+total 12
+drwx------.  2 root root   46 Mar 24 12:50 .
+dr-xr-x---. 17 root root 4096 Mar 24 12:44 ..
+-rw-------.  1 root root  419 Mar 24 12:50 id_ed25519
+-rw-r--r--.  1 root root  104 Mar 24 12:50 id_ed25519.pub
+[root@bastion serveradmin]# cat ~/.ssh/id_ed25519.pub
 ssh-ed25519 AAAA... root@bastion.ocp.local
-</div>
+```
 
 !!! warning "Save This Key"
 

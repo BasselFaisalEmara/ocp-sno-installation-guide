@@ -235,11 +235,15 @@ Always validate DNS configuration files before starting the service:
 firewall-cmd --add-service=dns --zone=external --permanent
 firewall-cmd --add-port=53/udp --zone=external --permanent
 firewall-cmd --reload
+
+firewall-cmd --add-service=dns --zone=internal --permanent
+firewall-cmd --add-port=53/udp --zone=internal --permanent
+firewall-cmd --reload
 ```
 
 !!! note
 
-    DNS is already allowed on the **internal** zone by default. We add it to the **external** zone so the Bastion can also respond to DNS queries from the external network if needed.
+    We explicitly open DNS (port 53 UDP) on both the **internal** and **external** zones to ensure the Bastion can respond to DNS queries from both the SNO nodes and the external network.
 
 ---
 

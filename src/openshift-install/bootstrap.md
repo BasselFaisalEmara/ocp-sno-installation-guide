@@ -40,166 +40,74 @@ graph TB
 
 ## 3.2 — Monitor the Installation
 
-### From the Bastion
+With the Assisted Installer, you do not need to run local commands to monitor the installation.
 
-Open a terminal on the Bastion and run:
+1. Keep your browser open to the **Red Hat Hybrid Cloud Console** (`console.redhat.com/openshift`).
+2. Navigate to your cluster's **Installation progress** page.
+3. You will see real-time status bars for the installation stages:
+   - Writing image to disk
+   - Rebooting
+   - Installing Control Plane
+   - Finalizing cluster
 
-```bash
-openshift-install wait-for install-complete \
-  --dir ~/ocp-install \
-  --log-level=info
-```
-
-!!! info "Expected Duration"
-
-    | Phase | Duration |
-    |-------|----------|
-    | Bootstrap | 15–30 minutes |
-    | Control Plane Operators | 10–20 minutes |
-    | Cluster Version finalization | 10–30 minutes |
-    | **Total** | **~45–90 minutes** |
-
-### Watch bootstrap specifically
-
-```bash
-openshift-install wait-for bootstrap-complete \
-  --dir ~/ocp-install \
-  --log-level=info
-```
-
-Expected final output:
-<div class="cmd-output">
-INFO Waiting up to 30m0s for the bootstrap to complete...<br/>
-<span class="success">INFO It is now safe to remove the bootstrap resources</span>
-</div>
+Wait for the progress bar to reach 100% and show **Installation completed successfully**.
 
 ---
 
-## 3.3 — Monitor via HAProxy Stats
+## 3.3 — Download and Configure Kubeconfig
 
-While the installation progresses, the HAProxy Stats page shows backend health in real-time:
+Once the installation is complete, you must download the cluster credentials to interact with it via the CLI on your Bastion host.
 
-```
-http://bastion.ocp.local:9000/stats
-```
-
-| Backend | Expected During Install | Expected After Install |
-|---------|------------------------|----------------------|
-| `k8s_api_backend` | 🟢 UP (after bootstrap starts) | 🟢 UP |
-| `ocp_machine_config_server_backend` | 🟢 UP | 🟢 UP |
-| `ocp_http_ingress_backend` | 🔴 DOWN (until router starts) | 🟢 UP |
-| `ocp_https_ingress_backend` | 🔴 DOWN (until router starts) | 🟢 UP |
-
----
-
-## 3.4 — SSH Access (Debugging)
-
-If you need to check on the node during installation:
+1. On the completion page in the web console, click the **Download kubeconfig** button.
+2. Transfer this file to your Bastion host. For example, open it in a text editor locally, then create a new file on the Bastion:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 core@192.168.83.20
+vim /root/kubeconfig
 ```
+*(Paste the contents of the downloaded kubeconfig and save it)*
 
-!!! note
-
-    The user is always `core` on RHCOS/CoreOS nodes, not `root`.
-
-Useful debugging commands on the node:
+3. Export the `KUBECONFIG` environment variable so the `oc` CLI knows how to connect to your cluster:
 
 ```bash
-# Check kubelet status
-sudo systemctl status kubelet
+export KUBECONFIG=/root/kubeconfig
+```
 
-# Stream kubelet logs
-sudo journalctl -u kubelet -f
+Make it persistent across SSH sessions:
 
-# Check container runtime
-sudo crictl ps
-
-# Check bootstrap progress
-sudo journalctl -b -f -u bootkube.service
+```bash
+echo 'export KUBECONFIG=/root/kubeconfig' >> ~/.bashrc
 ```
 
 ---
 
-## 3.5 — Installation Complete
+## 3.4 — Verify Cluster Access
 
-When the installation finishes successfully, you'll see:
-
-<div class="cmd-output">
-INFO Install complete!<br/>
-INFO To access the cluster as the system:admin user:<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;export KUBECONFIG=/root/ocp-install/auth/kubeconfig<br/>
-INFO Access the OpenShift web console here:<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="success">https://console-openshift-console.apps.sno.ocp.local</span><br/>
-INFO Login to the console with user: kubeadmin, password: <span class="warning">&lt;see auth/kubeadmin-password&gt;</span>
-</div>
-
-### Set KUBECONFIG
-
-```bash
-export KUBECONFIG=~/ocp-install/auth/kubeconfig
-```
-
-Make it persistent:
-
-```bash
-echo 'export KUBECONFIG=~/ocp-install/auth/kubeconfig' >> ~/.bashrc
-source ~/.bashrc
-```
-
-### Verify Cluster Access
-
-```bash
-oc whoami
-```
-
-<div class="cmd-output">
-<span class="success">system:admin</span>
-</div>
+Test your connection to the new Single Node OpenShift cluster:
 
 ```bash
 oc get nodes
 ```
 
-<div class="cmd-output">
-NAME&nbsp;&nbsp;&nbsp;STATUS&nbsp;&nbsp;&nbsp;ROLES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AGE&nbsp;&nbsp;&nbsp;VERSION<br/>
-sno1&nbsp;&nbsp;&nbsp;<span class="success">Ready</span>&nbsp;&nbsp;&nbsp;&nbsp;control-plane,master,worker&nbsp;&nbsp;&nbsp;30m&nbsp;&nbsp;&nbsp;v1.27.x
-</div>
-
-```bash
-oc get clusterversion
+**Expected output:**
+```text
+[root@bastion serveradmin]# oc get nodes
+NAME                 STATUS   ROLES                         AGE   VERSION
+sno1.sno.ocp.local   Ready    control-plane,master,worker   23m   v1.27.16+03a907c
 ```
-
-<div class="cmd-output">
-NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VERSION&nbsp;&nbsp;&nbsp;AVAILABLE&nbsp;&nbsp;&nbsp;PROGRESSING&nbsp;&nbsp;&nbsp;SINCE&nbsp;&nbsp;&nbsp;STATUS<br/>
-version&nbsp;&nbsp;&nbsp;4.14.0&nbsp;&nbsp;&nbsp;&nbsp;<span class="success">True</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;False&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10m&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="success">Cluster version is 4.14.0</span>
-</div>
 
 ---
 
-## 3.6 — Access the Web Console
+## 3.5 — Access the Web Console
 
-Open your browser and navigate to:
+You can now log in to the OpenShift Web Console.
 
-```
-https://console-openshift-console.apps.sno.ocp.local
-```
-
-Login credentials:
-
-| Field | Value |
-|-------|-------|
-| **Username** | `kubeadmin` |
-| **Password** | Contents of `~/ocp-install/auth/kubeadmin-password` |
-
-```bash
-cat ~/ocp-install/auth/kubeadmin-password
-```
+1. The URL and credentials are provided directly on the Assisted Installer completion screen.
+2. Open your browser and navigate to the **Web Console URL** (e.g., `https://console-openshift-console.apps.sno.ocp.local`)
+3. Login with the Username **`kubeadmin`** and the auto-generated **Password** shown in the portal.
 
 !!! success "🎉 Installation Complete!"
 
-    Your Single Node OpenShift cluster is now operational. Proceed to the post-installation validation steps to confirm everything is working correctly.
+    Your Single Node OpenShift cluster is now entirely operational! Proceed to the post-installation validation steps to completely verify the deployment.
 
 ---
 

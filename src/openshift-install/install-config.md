@@ -1,205 +1,106 @@
 ---
-title: Installation Configuration
+title: Assisted Installer Setup
 ---
 
-# :material-file-cog: Phase 2 — Installation Configuration
+# :material-cloud-check: Phase 2 — Assisted Installer Setup
 
-This phase creates the `install-config.yaml`, the primary input to the OpenShift installer, and generates the Ignition configs that the SNO node will consume during bootstrap.
+This phase uses the Red Hat Hybrid Cloud Console to generate the cluster configuration and the discovery ISO that the SNO node will use to boot.
 
 ---
 
-## 2.1 — Create Installation Directory
+## 2.1 — Create Cluster via Assisted Installer
+
+Instead of constructing YAML files manually, we will use the **Red Hat Hybrid Cloud Console** to generate our cluster configuration and discovery ISO.
+
+1. Navigate to [console.redhat.com/openshift](https://console.redhat.com/openshift) and log in.
+2. From the main menu, navigate to **Clusters** and click **Create cluster**.
+3. Select the **Datacenter** tab.
+4. Under **Assisted Installer**, click **Create cluster**.
+
+---
+
+## 2.2 — Cluster Details
+
+Fill out the initial cluster specifications to match your DNS and network layout:
+
+* **Cluster name:** `sno`
+* **Base domain:** `ocp.local` 
+  *(This will make the full cluster address `sno.ocp.local`)*
+* **OpenShift version:** Select `OpenShift 4.14.x` (e.g., `4.14.36`)
+* **CPU architecture:** `x86_64`
+* **Number of control plane nodes:** `1` (This tells the installer it's a Single Node OpenShift deployment)
+* **Hosts' network configuration:** `DHCP only`
+
+Click **Next** to proceed.
+
+---
+
+## 2.3 — Add Host and Generate Discovery ISO
+
+1. On the **Host discovery** step, click the **Add hosts** button.
+2. When prompted for SSH keys, paste the contents of your `id_ed25519.pub` public key that you generated on the Bastion host in the previous step.
+3. Click **Generate Discovery ISO**.
+4. Once generated, **Download the ISO** to your local machine.
+
+---
+
+## 2.4 — Upload ISO to VMware ESXi
+
+We now need to attach this Discovery ISO to the SNO virtual machine.
+
+1. Log in to your **VMware ESXi Host Client**.
+2. Navigate to **Storage** → Select your datastore (e.g., `datastore1`) and click **Datastore browser**.
+3. Create an `ISOs` directory if you don't have one, and click **Upload**.
+4. Upload the `*-discovery.iso` file that you just downloaded from Red Hat.
+
+---
+
+## 2.5 — Boot the SNO Node
+
+1. In the ESXi Client, select your SNO virtual machine (e.g., `SNO-Bassel`) and click **Edit settings**.
+2. Locate the **CD/DVD drive 1**.
+3. Change the setting to **Datastore ISO file** and select the discovery ISO you just uploaded.
+4. Ensure the **Connect at power on** box is checked.
+5. Save the settings and **Power On** the virtual machine.
+
+---
+
+## 2.6 — Troubleshooting Discovery Connectivity
+
+The SNO node will boot the ISO, acquire an IP via DHCP, and attempt to register itself back to the Red Hat Hybrid Cloud Console. 
+
+**Wait a few minutes.** If the host does not appear in the web console under the "Host discovery" page, it likely cannot reach the internet because of Bastion routing.
+
+To verify, open the VM console in ESXi and test connectivity:
 
 ```bash
-mkdir -p ~/ocp-install
-cd ~/ocp-install
+curl -4 -I https://console.redhat.com
 ```
 
-!!! warning "Installer Consumes the Config"
-
-    The `openshift-install` command **deletes** `install-config.yaml` after generating manifests. Always back it up before running the installer:
-
-    ```bash
-    cp install-config.yaml install-config.yaml.bak
-    ```
-
----
-
-## 2.2 — Create `install-config.yaml`
+If it fails to connect, the `firewalld` NAT policy on your Bastion host is not bridging the zones correctly. Apply the following fix on your **Bastion host**:
 
 ```bash
-vim ~/ocp-install/install-config.yaml
+# 1. Create a new routing policy bridging the zones
+sudo firewall-cmd --new-policy int_to_ext --permanent
+
+# 2. Tell the policy that traffic comes IN from the internal zone (SNO)
+sudo firewall-cmd --policy int_to_ext --add-ingress-zone internal --permanent
+
+# 3. Tell the policy that traffic goes OUT to the external zone (Internet)
+sudo firewall-cmd --policy int_to_ext --add-egress-zone external --permanent
+
+# 4. Set the policy to ACCEPT and route the traffic
+sudo firewall-cmd --policy int_to_ext --set-target ACCEPT --permanent
+
+# 5. Reload the firewall to apply the new bridge
+sudo firewall-cmd --reload
 ```
 
-```yaml title="install-config.yaml" linenums="1"
-apiVersion: v1
-baseDomain: ocp.local                        # (1)!
-compute:
-- hyperthreading: Enabled
-  name: worker
-  replicas: 0                                # (2)!
-controlPlane:
-  hyperthreading: Enabled
-  name: master
-  replicas: 1                                # (3)!
-metadata:
-  name: sno                                  # (4)!
-networking:
-  clusterNetwork:
-  - cidr: 10.128.0.0/14                      # (5)!
-    hostPrefix: 23
-  networkType: OVNKubernetes                 # (6)!
-  serviceNetwork:
-  - 172.30.0.0/16                            # (7)!
-platform:
-  none: {}                                   # (8)!
-fips: false
-pullSecret: '<YOUR_PULL_SECRET_HERE>'        # (9)!
-sshKey: '<YOUR_SSH_PUBLIC_KEY_HERE>'          # (10)!
-```
-
-1.  :material-domain: Base domain — combined with `metadata.name` to form `sno.ocp.local`
-2.  :fontawesome-solid-triangle-exclamation: **Must be `0` for SNO** — the single node runs both control plane and worker workloads
-3.  :material-numeric-1-circle: **Must be `1` for SNO** — single control plane node
-4.  :material-tag: Cluster name — becomes the subdomain (`sno.ocp.local`)
-5.  :material-lan: Pod network CIDR — internal overlay network for pods
-6.  :material-network: OVN-Kubernetes is the default SDN for OCP 4.14+
-7.  :material-server-network: Service network CIDR — internal ClusterIP range
-8.  :material-cancel: `none` platform — bare metal / no cloud provider integration
-9.  :material-key: Paste your Red Hat pull secret (single-line JSON)
-10. :material-ssh: Paste the contents of `~/.ssh/id_ed25519.pub`
-
----
-
-## Key Configuration Explained
-
-### Why `replicas: 0` for workers?
-
-In a Single Node OpenShift deployment, the control plane node is **automatically schedulable** for workloads. Setting worker replicas to `0` tells the installer not to expect any dedicated worker nodes. The SNO node fulfills both roles.
-
-### Cluster Name + Base Domain
-
-The combination of `metadata.name` and `baseDomain` forms the cluster's FQDN:
-
-```
-<metadata.name>.<baseDomain> = sno.ocp.local
-```
-
-This must match your DNS configuration:
-
-| Record | Resolves To |
-|--------|-------------|
-| `api.sno.ocp.local` | `192.168.83.10` (Bastion/HAProxy) |
-| `api-int.sno.ocp.local` | `192.168.83.10` (Bastion/HAProxy) |
-| `*.apps.sno.ocp.local` | `192.168.83.10` (Bastion/HAProxy) |
-
----
-
-## 2.3 — Generate Manifests (Optional Inspection)
-
-If you want to inspect or customize manifests before creating Ignition configs:
-
-```bash
-openshift-install create manifests --dir ~/ocp-install
-```
-
-This generates:
-
-```
-~/ocp-install/
-├── manifests/
-│   ├── cluster-config.yaml
-│   ├── cluster-dns-02-config.yml
-│   ├── cluster-infrastructure-02-config.yml
-│   ├── cluster-ingress-02-config.yml
-│   └── ...
-└── openshift/
-    ├── 99_openshift-cluster-api_master-machines-0.yaml
-    └── ...
-```
-
-!!! note
-
-    If you only want Ignition configs and don't need to customize manifests, you can skip this step and go directly to creating Ignition configs (the installer generates manifests internally).
-
----
-
-## 2.4 — Generate Ignition Configs
-
-```bash
-openshift-install create single-node-ignition-config --dir ~/ocp-install
-```
-
-This produces:
-
-```
-~/ocp-install/
-├── bootstrap-in-place-for-live-iso.ign    # (1)!
-├── metadata.json
-└── auth/
-    ├── kubeadmin-password                  # (2)!
-    └── kubeconfig                          # (3)!
-```
-
-1.  :material-fire: The Ignition config that will be injected into the CoreOS ISO
-2.  :material-lock: Initial admin password for the web console
-3.  :material-key-variant: Kubeconfig for CLI access
-
-!!! danger "Backup These Files"
-
-    The `auth/` directory contains credentials you **cannot regenerate**. Back them up immediately:
-
-    ```bash
-    cp -r ~/ocp-install/auth ~/ocp-install-auth-backup
-    ```
-
----
-
-## 2.5 — Prepare the Boot ISO
-
-Download the RHCOS live ISO:
-
-```bash
-wget https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.14/latest/rhcos-live.x86_64.iso
-```
-
-Embed the Ignition config into the ISO using `coreos-installer`:
-
-```bash
-# Install coreos-installer if not present
-dnf install coreos-installer -y
-
-# Embed ignition into the ISO
-coreos-installer iso ignition embed \
-  -i ~/ocp-install/bootstrap-in-place-for-live-iso.ign \
-  rhcos-live.x86_64.iso
-```
-
-!!! tip "Alternative: Serve via HTTP"
-
-    Instead of embedding, you can serve the Ignition file over HTTP and pass it as a kernel argument during boot:
-
-    ```bash
-    # Start a simple HTTP server
-    python3 -m http.server 8080 --directory ~/ocp-install
-
-    # Then use this kernel argument when booting the ISO:
-    # coreos.inst.ignition_url=http://192.168.83.10:8080/bootstrap-in-place-for-live-iso.ign
-    ```
-
----
-
-## Checklist
-
-- [x] `install-config.yaml` created with correct domain, replicas, and credentials
-- [x] Backup of `install-config.yaml` saved
-- [x] Ignition configs generated
-- [x] `auth/` directory backed up
-- [x] Boot ISO prepared with embedded Ignition
+After applying these firewall rules, the SNO node should successfully reach the internet, phone home, and appear as a **Ready** host in your Red Hat web console!
 
 !!! success "Checkpoint"
 
-    The installation media is ready. The next step is to boot the SNO node.
+    The SNO node has been successfully discovered by the Assisted Installer. You are now ready to finalize the network and storage settings in the web UI and trigger the installation.
 
 ---
 

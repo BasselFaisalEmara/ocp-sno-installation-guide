@@ -59,18 +59,25 @@ ignore client-updates;
 default-lease-time 14400;         # (2)!
 max-lease-time 14400;
 
+option space pxelinux;
+option pxelinux.magic code 208 = string;
+option pxelinux.configfile code 209 = text;
+option pxelinux.pathprefix code 210 = text;
+option pxelinux.reboottime code 211 = unsigned integer 32;
+option architecture-type code 93 = unsigned integer 16;
+
 subnet 192.168.83.0 netmask 255.255.255.0 {
-  option routers                  192.168.83.10;   # (3)!
-  option subnet-mask              255.255.255.0;
-  option domain-name              "ocp.local";
-  option domain-name-servers      192.168.83.10;   # (4)!
-  range 192.168.83.101 192.168.83.120;             # (5)!
+    option routers                  192.168.83.10;   # (3)!
+    option subnet-mask              255.255.255.0;
+    option domain-name              "ocp.local";
+    option domain-name-servers      192.168.83.10;   # (4)!
+    range 192.168.83.80 192.168.83.99;             # (5)!
 }
 
 # SNO Node — Static Reservation
 host sno1 {
-  hardware ethernet 00:50:56:3c:dd:54;             # (6)!
-  fixed-address 192.168.83.20;
+    hardware ethernet 00:0c:29:3e:a7:1c;             # (6)!
+    fixed-address 192.168.83.20;
 }
 ```
 

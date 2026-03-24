@@ -63,6 +63,22 @@ internal<br/>
 &nbsp;&nbsp;interfaces: ens224
 </div>
 
+### List All Zone Configurations
+
+```bash
+firewall-cmd --list-all --zone=external
+firewall-cmd --list-all --zone=internal
+```
+
+Expected output for `external`:
+<div class="cmd-output">
+external (active)<br/>
+&nbsp;&nbsp;target: default<br/>
+&nbsp;&nbsp;icmp-block-inversion: no<br/>
+&nbsp;&nbsp;interfaces: ens192<br/>
+&nbsp;&nbsp;sources:
+</div>
+
 ---
 
 ## 1.2 — Enable Masquerade (NAT)

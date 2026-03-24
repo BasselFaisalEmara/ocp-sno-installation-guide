@@ -12,7 +12,7 @@ With all Bastion infrastructure services operational, the next phase is to downl
 
 ```mermaid
 graph LR
-    A["1. Prerequisites<br/>& Client Tools"] --> B["2. Install Config<br/>& Manifests"]
+    A["1. Prerequisites<br/>& Client Tools"] --> B["2. Assisted<br/>Installer Setup"]
     B --> C["3. Bootstrap<br/>& Installation"]
     C --> D["Cluster<br/>Ready ✓"]
 
@@ -28,9 +28,9 @@ graph LR
 
 | Phase | What Happens | Duration |
 |-------|-------------|----------|
-| **Prerequisites** | Download `oc` CLI and `openshift-install`, generate SSH keys | ~5 min |
-| **Install Config** | Create `install-config.yaml`, generate Ignition configs | ~5 min |
-| **Bootstrap** | Boot SNO node, wait for bootstrap and installation to complete | ~45-90 min |
+| **Prerequisites** | Download `oc` CLI, generate SSH keys | ~5 min |
+| **Assisted Installer** | Configure cluster via Web UI, download/boot ISO | ~10 min |
+| **Bootstrap** | Boot SNO node, wait for completion | ~45-90 min |
 
 ---
 

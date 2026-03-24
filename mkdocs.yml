@@ -97,12 +97,16 @@ nav:
   - OpenShift Installation:
     - Overview: openshift-install/index.md
     - 1. Prerequisites & Client Tools: openshift-install/prerequisites.md
-    - 2. Installation Configuration: openshift-install/install-config.md
+    - 2. Assisted Installer Setup: openshift-install/install-config.md
     - 3. Bootstrap & Installation: openshift-install/bootstrap.md
   - Post-Installation:
     - Overview: post-install/index.md
     - Validation & Smoke Tests: post-install/validation.md
     - Troubleshooting: post-install/troubleshooting.md
+  - MAS Installation:
+    - Overview: mas-install/index.md
+    - 1. LVM Storage Operator: mas-install/storage.md
+    - 2. Entitlement & License: mas-install/licensing.md
 
 extra_css:
   - assets/custom.css
