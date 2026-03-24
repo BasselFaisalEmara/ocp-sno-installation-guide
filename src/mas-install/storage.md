@@ -175,15 +175,37 @@ oc edit configs.imageregistry.operator.openshift.io
 
 Make three specific modifications in the YAML editor:
 
-   * **Change** `managementState: Removed` → `managementState: Managed`
-   * **Change** `rolloutStrategy: RollingUpdate` → `rolloutStrategy: Recreate`
-   * **Replace** the empty `storage: {}` block with:
+* **Set `managementState`** from `Removed` to `Managed`:
 
-```yaml
-storage:
-  pvc:
-    claim: ''
-```
+    ```yaml
+    managementState: Removed
+    ```
+    to
+    ```yaml
+    managementState: Managed
+    ```
+
+* **Set `rolloutStrategy`** from `RollingUpdate` to `Recreate`:
+
+    ```yaml
+    rolloutStrategy: RollingUpdate
+    ```
+    to
+    ```yaml
+    rolloutStrategy: Recreate
+    ```
+
+* **Set `storage`** — replace the empty block with a PVC claim:
+
+    ```yaml
+    storage: {}
+    ```
+    to
+    ```yaml
+    storage:
+      pvc:
+        claim: ''
+    ```
 
 Save and quit the editor. The registry operator will bind the PVC we created and start the registry pods.
 
