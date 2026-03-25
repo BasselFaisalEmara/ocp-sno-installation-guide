@@ -98,13 +98,13 @@ curl -4 -I https://console.redhat.com
 If it fails to connect, the `firewalld` NAT policy on your Bastion host is not bridging the zones correctly.
 
 !!! tip "Already configured?"
-    If you followed the [Firewall Configuration](../bastion-setup/firewall.md#13--create-routing-policy-internal--external) guide earlier and created the `in_out_policy`, this should already be working. Verify with:
+    If you followed the [Firewall Configuration](../bastion-setup/firewall.md) guide earlier and created the `in_out_policy`, this should already be working. Verify with:
 
     ```bash
     firewall-cmd --info-policy=in_out_policy
     ```
 
-    If the policy does not exist, go back and create it as described in [Step 1.3 — Create Routing Policy](../bastion-setup/firewall.md#13--create-routing-policy-internal--external).
+    If the policy does not exist, go back and create it as described in [Step 1.3 — Create Routing Policy](../bastion-setup/firewall.md).
 
 After verifying the firewall policy, the SNO node should successfully reach the internet, phone home, and appear as a **Ready** host in your Red Hat web console!
 
