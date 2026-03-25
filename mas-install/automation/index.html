@@ -1600,6 +1600,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#37-troubleshooting-the-installer-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 — Troubleshooting the Installer Container
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2100,6 +2111,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#37-troubleshooting-the-installer-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 — Troubleshooting the Installer Container
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2450,6 +2472,18 @@
 <p class="admonition-title">MAS Deployment Complete!</p>
 <p>Once the pipelines finish successfully, you will receive the Super User credentials in the terminal to access the MAS Administration portal.</p>
 </div>
+<hr />
+<h2 id="37-troubleshooting-the-installer-container">3.7 — Troubleshooting the Installer Container<a class="headerlink" href="#37-troubleshooting-the-installer-container" title="Permanent link">&para;</a></h2>
+<p>If the interactive terminal becomes unresponsive, or if you need to view the raw execution logs while the wizard is running or after it finishes, you can hook into the running container from a <strong>second SSH session</strong>.</p>
+<ol>
+<li>Open a new terminal and SSH into your Bastion host.</li>
+<li>Find the running MAS CLI container ID:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>podman<span class="w"> </span>ps
+</span></code></pre></div></li>
+<li>Execute a <code>tail</code> command against the container (replace <code>15e8d9dc1dbf</code> with your actual container ID):
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>podman<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>15e8d9dc1dbf<span class="w"> </span>tail<span class="w"> </span>-f<span class="w"> </span>mas.log
+</span></code></pre></div></li>
+</ol>
 
 
 
