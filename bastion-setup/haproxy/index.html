@@ -1,0 +1,1919 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Complete step-by-step guide for deploying Single Node OpenShift with Bastion Host infrastructure services">
+      
+      
+        <meta name="author" content="Bassel Emara">
+      
+      
+      
+        <link rel="prev" href="../dhcp/">
+      
+      
+        <link rel="next" href="../../openshift-install/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>HAProxy Load Balancer - Single Node OpenShift (SNO) Installation Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#step-4-haproxy-load-balancer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Single Node OpenShift (SNO) Installation Guide" class="md-header__button md-logo" aria-label="Single Node OpenShift (SNO) Installation Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.86 12.5A4.31 4.31 0 0 0 19 11c0-1.95-.68-3.6-2.04-4.96S13.95 4 12 4c-1.58 0-3 .47-4.25 1.43s-2.08 2.19-2.5 3.72c-1.25.28-2.29.93-3.08 1.95S1 13.28 1 14.58c0 1.51.54 2.8 1.61 3.85C3.69 19.5 5 20 6.5 20h12c1.25 0 2.31-.44 3.19-1.31.87-.88 1.31-1.94 1.31-3.19q0-1.725-1.14-3M10.5 10H9v1c0 1.11-.89 2-2 2a2 2 0 0 1 2 2v1h1.5v2H9a2 2 0 0 1-2-2v-1c0-.55-.45-1-1-1h-.5v-2H6c.55 0 1-.45 1-1v-1c0-1.1.9-2 2-2h1.5zm8 4H18c-.55 0-1 .45-1 1v1c0 1.11-.89 2-2 2h-1.5v-2H15v-1c0-1.1.9-2 2-2a2 2 0 0 1-2-2v-1h-1.5V8H15a2 2 0 0 1 2 2v1c0 .55.45 1 1 1h.5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Single Node OpenShift (SNO) Installation Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              HAProxy Load Balancer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Bastion Host Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift-install/" class="md-tabs__link">
+          
+  
+  
+  OpenShift Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../post-install/" class="md-tabs__link">
+          
+  
+  
+  Post-Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mas-install/" class="md-tabs__link">
+          
+  
+  
+  MAS Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Single Node OpenShift (SNO) Installation Guide" class="md-nav__button md-logo" aria-label="Single Node OpenShift (SNO) Installation Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.86 12.5A4.31 4.31 0 0 0 19 11c0-1.95-.68-3.6-2.04-4.96S13.95 4 12 4c-1.58 0-3 .47-4.25 1.43s-2.08 2.19-2.5 3.72c-1.25.28-2.29.93-3.08 1.95S1 13.28 1 14.58c0 1.51.54 2.8 1.61 3.85C3.69 19.5 5 20 6.5 20h12c1.25 0 2.31-.44 3.19-1.31.87-.88 1.31-1.94 1.31-3.19q0-1.725-1.14-3M10.5 10H9v1c0 1.11-.89 2-2 2a2 2 0 0 1 2 2v1h1.5v2H9a2 2 0 0 1-2-2v-1c0-.55-.45-1-1-1h-.5v-2H6c.55 0 1-.45 1-1v-1c0-1.1.9-2 2-2h1.5zm8 4H18c-.55 0-1 .45-1 1v1c0 1.11-.89 2-2 2h-1.5v-2H15v-1c0-1.1.9-2 2-2a2 2 0 0 1-2-2v-1h-1.5V8H15a2 2 0 0 1 2 2v1c0 .55.45 1 1 1h.5z"/></svg>
+
+    </a>
+    Single Node OpenShift (SNO) Installation Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bastion Host Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bastion Host Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firewall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Firewall Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. DNS Server (BIND)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dhcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. DHCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. HAProxy Load Balancer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. HAProxy Load Balancer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-haproxy-for-sno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why HAProxy for SNO?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41-install-haproxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 — Install HAProxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-configure-haproxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 — Configure HAProxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#port-traffic-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Port &amp; Traffic Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-validate-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 — Validate Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-open-firewall-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 — Open Firewall Ports
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 — Open Firewall Ports">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45-configure-selinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 — Configure SELinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46-enable-and-start-the-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 — Enable and Start the Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#47-verify-stats-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 — Verify Stats Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/prerequisites/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Prerequisites & Client Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/install-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Assisted Installer Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Bootstrap & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Post-Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Smoke Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MAS Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MAS Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mas-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mas-install/storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. LVM Storage Operator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mas-install/licensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Entitlement & License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mas-install/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Automated Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-haproxy-for-sno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why HAProxy for SNO?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41-install-haproxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 — Install HAProxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-configure-haproxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 — Configure HAProxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#port-traffic-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Port &amp; Traffic Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-validate-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 — Validate Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-open-firewall-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 — Open Firewall Ports
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 — Open Firewall Ports">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45-configure-selinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 — Configure SELinux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46-enable-and-start-the-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 — Enable and Start the Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#47-verify-stats-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 — Verify Stats Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="step-4-haproxy-load-balancer"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3c-1.27 0-2.4.8-2.82 2H3v2h1.95L2 14c-.47 2 1 3 3.5 3s4.06-1 3.5-3L6.05 7h3.12c.33.85.98 1.5 1.83 1.83V20H2v2h20v-2h-9V8.82c.85-.32 1.5-.97 1.82-1.82h3.13L15 14c-.47 2 1 3 3.5 3s4.06-1 3.5-3l-2.95-7H21V5h-6.17C14.4 3.8 13.27 3 12 3m0 2a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1m-6.5 5.25L7 14H4zm13 0L20 14h-3z"/></svg></span> Step 4 — HAProxy Load Balancer<a class="headerlink" href="#step-4-haproxy-load-balancer" title="Permanent link">&para;</a></h1>
+<p>HAProxy acts as a <strong>Layer 4 (TCP) load balancer</strong> on the Bastion, proxying traffic to the SNO node for the Kubernetes API, Machine Config Server, and application Ingress.</p>
+<hr />
+<h2 id="why-haproxy-for-sno">Why HAProxy for SNO?<a class="headerlink" href="#why-haproxy-for-sno" title="Permanent link">&para;</a></h2>
+<div class="admonition question">
+<p class="admonition-title">Do I need a load balancer for a single node?</p>
+<p>Yes. Even with a single node, OpenShift <strong>requires</strong> API and Ingress traffic to be resolved and routed through the <code>api.*</code> and <code>*.apps.*</code> DNS names. HAProxy provides a consistent entry point and also enables the <strong>HAProxy Stats dashboard</strong> for monitoring.</p>
+<p>In multi-node clusters, HAProxy distributes traffic across multiple control plane and worker nodes. In SNO, all backends point to the same node.</p>
+</div>
+<hr />
+<h2 id="41-install-haproxy">4.1 — Install HAProxy<a class="headerlink" href="#41-install-haproxy" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dnf<span class="w"> </span>install<span class="w"> </span>haproxy<span class="w"> </span>-y
+</span></code></pre></div>
+<hr />
+<h2 id="42-configure-haproxy">4.2 — Configure HAProxy<a class="headerlink" href="#42-configure-haproxy" title="Permanent link">&para;</a></h2>
+<p>Edit the HAProxy configuration file:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>vim<span class="w"> </span>/etc/haproxy/haproxy.cfg
+</span></code></pre></div>
+<p>Replace with the following:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">/etc/haproxy/haproxy.cfg</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-2-10">10</a></span>
+<span class="normal"><a href="#__codelineno-2-11">11</a></span>
+<span class="normal"><a href="#__codelineno-2-12">12</a></span>
+<span class="normal"><a href="#__codelineno-2-13">13</a></span>
+<span class="normal"><a href="#__codelineno-2-14">14</a></span>
+<span class="normal"><a href="#__codelineno-2-15">15</a></span>
+<span class="normal"><a href="#__codelineno-2-16">16</a></span>
+<span class="normal"><a href="#__codelineno-2-17">17</a></span>
+<span class="normal"><a href="#__codelineno-2-18">18</a></span>
+<span class="normal"><a href="#__codelineno-2-19">19</a></span>
+<span class="normal"><a href="#__codelineno-2-20">20</a></span>
+<span class="normal"><a href="#__codelineno-2-21">21</a></span>
+<span class="normal"><a href="#__codelineno-2-22">22</a></span>
+<span class="normal"><a href="#__codelineno-2-23">23</a></span>
+<span class="normal"><a href="#__codelineno-2-24">24</a></span>
+<span class="normal"><a href="#__codelineno-2-25">25</a></span>
+<span class="normal"><a href="#__codelineno-2-26">26</a></span>
+<span class="normal"><a href="#__codelineno-2-27">27</a></span>
+<span class="normal"><a href="#__codelineno-2-28">28</a></span>
+<span class="normal"><a href="#__codelineno-2-29">29</a></span>
+<span class="normal"><a href="#__codelineno-2-30">30</a></span>
+<span class="normal"><a href="#__codelineno-2-31">31</a></span>
+<span class="normal"><a href="#__codelineno-2-32">32</a></span>
+<span class="normal"><a href="#__codelineno-2-33">33</a></span>
+<span class="normal"><a href="#__codelineno-2-34">34</a></span>
+<span class="normal"><a href="#__codelineno-2-35">35</a></span>
+<span class="normal"><a href="#__codelineno-2-36">36</a></span>
+<span class="normal"><a href="#__codelineno-2-37">37</a></span>
+<span class="normal"><a href="#__codelineno-2-38">38</a></span>
+<span class="normal"><a href="#__codelineno-2-39">39</a></span>
+<span class="normal"><a href="#__codelineno-2-40">40</a></span>
+<span class="normal"><a href="#__codelineno-2-41">41</a></span>
+<span class="normal"><a href="#__codelineno-2-42">42</a></span>
+<span class="normal"><a href="#__codelineno-2-43">43</a></span>
+<span class="normal"><a href="#__codelineno-2-44">44</a></span>
+<span class="normal"><a href="#__codelineno-2-45">45</a></span>
+<span class="normal"><a href="#__codelineno-2-46">46</a></span>
+<span class="normal"><a href="#__codelineno-2-47">47</a></span>
+<span class="normal"><a href="#__codelineno-2-48">48</a></span>
+<span class="normal"><a href="#__codelineno-2-49">49</a></span>
+<span class="normal"><a href="#__codelineno-2-50">50</a></span>
+<span class="normal"><a href="#__codelineno-2-51">51</a></span>
+<span class="normal"><a href="#__codelineno-2-52">52</a></span>
+<span class="normal"><a href="#__codelineno-2-53">53</a></span>
+<span class="normal"><a href="#__codelineno-2-54">54</a></span>
+<span class="normal"><a href="#__codelineno-2-55">55</a></span>
+<span class="normal"><a href="#__codelineno-2-56">56</a></span>
+<span class="normal"><a href="#__codelineno-2-57">57</a></span>
+<span class="normal"><a href="#__codelineno-2-58">58</a></span>
+<span class="normal"><a href="#__codelineno-2-59">59</a></span>
+<span class="normal"><a href="#__codelineno-2-60">60</a></span>
+<span class="normal"><a href="#__codelineno-2-61">61</a></span>
+<span class="normal"><a href="#__codelineno-2-62">62</a></span>
+<span class="normal"><a href="#__codelineno-2-63">63</a></span>
+<span class="normal"><a href="#__codelineno-2-64">64</a></span>
+<span class="normal"><a href="#__codelineno-2-65">65</a></span>
+<span class="normal"><a href="#__codelineno-2-66">66</a></span>
+<span class="normal"><a href="#__codelineno-2-67">67</a></span>
+<span class="normal"><a href="#__codelineno-2-68">68</a></span>
+<span class="normal"><a href="#__codelineno-2-69">69</a></span>
+<span class="normal"><a href="#__codelineno-2-70">70</a></span>
+<span class="normal"><a href="#__codelineno-2-71">71</a></span>
+<span class="normal"><a href="#__codelineno-2-72">72</a></span>
+<span class="normal"><a href="#__codelineno-2-73">73</a></span>
+<span class="normal"><a href="#__codelineno-2-74">74</a></span>
+<span class="normal"><a href="#__codelineno-2-75">75</a></span>
+<span class="normal"><a href="#__codelineno-2-76">76</a></span>
+<span class="normal"><a href="#__codelineno-2-77">77</a></span>
+<span class="normal"><a href="#__codelineno-2-78">78</a></span>
+<span class="normal"><a href="#__codelineno-2-79">79</a></span>
+<span class="normal"><a href="#__codelineno-2-80">80</a></span>
+<span class="normal"><a href="#__codelineno-2-81">81</a></span>
+<span class="normal"><a href="#__codelineno-2-82">82</a></span>
+<span class="normal"><a href="#__codelineno-2-83">83</a></span>
+<span class="normal"><a href="#__codelineno-2-84">84</a></span>
+<span class="normal"><a href="#__codelineno-2-85">85</a></span>
+<span class="normal"><a href="#__codelineno-2-86">86</a></span>
+<span class="normal"><a href="#__codelineno-2-87">87</a></span>
+<span class="normal"><a href="#__codelineno-2-88">88</a></span>
+<span class="normal"><a href="#__codelineno-2-89">89</a></span>
+<span class="normal"><a href="#__codelineno-2-90">90</a></span>
+<span class="normal"><a href="#__codelineno-2-91">91</a></span>
+<span class="normal"><a href="#__codelineno-2-92">92</a></span>
+<span class="normal"><a href="#__codelineno-2-93">93</a></span>
+<span class="normal"><a href="#__codelineno-2-94">94</a></span>
+<span class="normal"><a href="#__codelineno-2-95">95</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a># =============================================================================
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a># Global settings
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a># =============================================================================
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>global
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>    maxconn     20000
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>    log         /dev/log local0 info
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>    chroot      /var/lib/haproxy
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>    pidfile     /var/run/haproxy.pid
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a>    user        haproxy
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10"></a>    group       haproxy
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11"></a>    daemon
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13"></a>    # turn on stats unix socket
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14"></a>    stats socket /var/lib/haproxy/stats
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16"></a># =============================================================================
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17"></a># Defaults
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18"></a># =============================================================================
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19"></a>defaults
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20"></a>    log                     global
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21"></a>    mode                    http
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22"></a>    option                  httplog
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23"></a>    option                  dontlognull
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24"></a>    option http-server-close
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25"></a>    option redispatch
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26"></a>    option forwardfor       except 127.0.0.0/8
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27"></a>    retries                 3
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28"></a>    maxconn                 20000
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29"></a>    timeout http-request    10000ms
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30"></a>    timeout http-keep-alive 10000ms
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31"></a>    timeout check           10000ms
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32"></a>    timeout connect         40000ms
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33"></a>    timeout client          300000ms
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34"></a>    timeout server          300000ms
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35"></a>    timeout queue           50000ms
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36"></a>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37"></a># =============================================================================
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38"></a># HAProxy Stats Dashboard (1)
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39"></a># =============================================================================
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40"></a>listen stats
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41"></a>    bind :9000
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42"></a>    stats uri /stats
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43"></a>    stats refresh 10000ms
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44"></a>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45"></a># =============================================================================
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46"></a># Frontend/Backend: Kubernetes API Server (Port 6443) (2)
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47"></a># =============================================================================
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48"></a>frontend k8s_api_frontend
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49"></a>    bind :6443
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50"></a>    default_backend k8s_api_backend
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51"></a>    mode tcp
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52"></a>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53"></a>backend k8s_api_backend
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54"></a>    mode tcp
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55"></a>    balance source
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56"></a>    server      master-sno1 192.168.83.20:6443 check
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57"></a>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58"></a># =============================================================================
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59"></a># Frontend/Backend: Machine Config Server (Port 22623) (3)
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60"></a># =============================================================================
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61"></a>frontend ocp_machine_config_server_frontend
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62"></a>    mode tcp
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63"></a>    bind :22623
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64"></a>    default_backend ocp_machine_config_server_backend
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65"></a>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66"></a>backend ocp_machine_config_server_backend
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67"></a>    mode tcp
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68"></a>    balance source
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69"></a>    server      master-sno1 192.168.83.20:22623 check
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70"></a>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71"></a># =============================================================================
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72"></a># Frontend/Backend: HTTP Ingress (Port 80) (4)
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73"></a># =============================================================================
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74"></a>frontend ocp_http_ingress_frontend
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75"></a>    bind :80
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76"></a>    default_backend ocp_http_ingress_backend
+</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77"></a>    mode tcp
+</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78"></a>
+</span><span id="__span-2-79"><a id="__codelineno-2-79" name="__codelineno-2-79"></a>backend ocp_http_ingress_backend
+</span><span id="__span-2-80"><a id="__codelineno-2-80" name="__codelineno-2-80"></a>    balance source
+</span><span id="__span-2-81"><a id="__codelineno-2-81" name="__codelineno-2-81"></a>    mode tcp
+</span><span id="__span-2-82"><a id="__codelineno-2-82" name="__codelineno-2-82"></a>    server      worker-sno1 192.168.83.20:80 check
+</span><span id="__span-2-83"><a id="__codelineno-2-83" name="__codelineno-2-83"></a>
+</span><span id="__span-2-84"><a id="__codelineno-2-84" name="__codelineno-2-84"></a># =============================================================================
+</span><span id="__span-2-85"><a id="__codelineno-2-85" name="__codelineno-2-85"></a># Frontend/Backend: HTTPS Ingress (Port 443)
+</span><span id="__span-2-86"><a id="__codelineno-2-86" name="__codelineno-2-86"></a># =============================================================================
+</span><span id="__span-2-87"><a id="__codelineno-2-87" name="__codelineno-2-87"></a>frontend ocp_https_ingress_frontend
+</span><span id="__span-2-88"><a id="__codelineno-2-88" name="__codelineno-2-88"></a>    bind *:443
+</span><span id="__span-2-89"><a id="__codelineno-2-89" name="__codelineno-2-89"></a>    default_backend ocp_https_ingress_backend
+</span><span id="__span-2-90"><a id="__codelineno-2-90" name="__codelineno-2-90"></a>    mode tcp
+</span><span id="__span-2-91"><a id="__codelineno-2-91" name="__codelineno-2-91"></a>
+</span><span id="__span-2-92"><a id="__codelineno-2-92" name="__codelineno-2-92"></a>backend ocp_https_ingress_backend
+</span><span id="__span-2-93"><a id="__codelineno-2-93" name="__codelineno-2-93"></a>    mode tcp
+</span><span id="__span-2-94"><a id="__codelineno-2-94" name="__codelineno-2-94"></a>    balance source
+</span><span id="__span-2-95"><a id="__codelineno-2-95" name="__codelineno-2-95"></a>    server      worker-sno1 192.168.83.20:443 check
+</span></code></pre></div></td></tr></table></div>
+<ol>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 21H2V3h2v16h2v-9h4v9h2V6h4v13h2v-5h4z"/></svg></span> Stats dashboard accessible at <code>http://bastion.ocp.local:9000/stats</code></li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 7H5a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2m0 4H5V9h2m7-2h-4v10h2v-4h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2m0 4h-2V9h2m6 0v6h1v2h-4v-2h1V9h-1V7h4v2Z"/></svg></span> Kubernetes API — used by <code>oc</code>, <code>kubectl</code>, and cluster components</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64z"/></svg></span> Machine Config Server — serves Ignition configs during bootstrap</li>
+<li><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> HTTP/HTTPS Ingress — routes all <code>*.apps.sno.ocp.local</code> traffic</li>
+</ol>
+<hr />
+<h2 id="port-traffic-summary">Port &amp; Traffic Summary<a class="headerlink" href="#port-traffic-summary" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "HAProxy Frontends"
+        F1[":6443 — API"]
+        F2[":22623 — MCS"]
+        F3[":80 — HTTP"]
+        F4[":443 — HTTPS"]
+        F5[":9000 — Stats"]
+    end
+
+    subgraph "Backend: sno1 (192.168.83.20)"
+        B1["kube-apiserver :6443"]
+        B2["machine-config-server :22623"]
+        B3["openshift-router :80"]
+        B4["openshift-router :443"]
+    end
+
+    F1 --&gt;|TCP passthrough| B1
+    F2 --&gt;|TCP passthrough| B2
+    F3 --&gt;|TCP passthrough| B3
+    F4 --&gt;|TCP passthrough| B4
+
+    style F1 fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style F2 fill:#6366f1,stroke:#4f46e5,color:#fff
+    style F3 fill:#06b6d4,stroke:#0891b2,color:#fff
+    style F4 fill:#06b6d4,stroke:#0891b2,color:#fff
+    style F5 fill:#f59e0b,stroke:#d97706,color:#fff</code></pre>
+<table>
+<thead>
+<tr>
+<th>Frontend</th>
+<th>Port</th>
+<th>Mode</th>
+<th>Backend</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>k8s_api_frontend</code></td>
+<td>6443</td>
+<td>TCP</td>
+<td><code>sno1:6443</code></td>
+<td>Kubernetes API</td>
+</tr>
+<tr>
+<td><code>ocp_machine_config_server_frontend</code></td>
+<td>22623</td>
+<td>TCP</td>
+<td><code>sno1:22623</code></td>
+<td>Ignition config delivery</td>
+</tr>
+<tr>
+<td><code>ocp_http_ingress_frontend</code></td>
+<td>80</td>
+<td>TCP</td>
+<td><code>sno1:80</code></td>
+<td>HTTP application traffic</td>
+</tr>
+<tr>
+<td><code>ocp_https_ingress_frontend</code></td>
+<td>443</td>
+<td>TCP</td>
+<td><code>sno1:443</code></td>
+<td>HTTPS application traffic</td>
+</tr>
+<tr>
+<td><code>stats</code></td>
+<td>9000</td>
+<td>HTTP</td>
+<td>—</td>
+<td>HAProxy monitoring dashboard</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="43-validate-configuration">4.3 — Validate Configuration<a class="headerlink" href="#43-validate-configuration" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>haproxy<span class="w"> </span>-c<span class="w"> </span>-f<span class="w"> </span>/etc/haproxy/haproxy.cfg
+</span></code></pre></div>
+<p>Expected:</p>
+<div class="cmd-output">
+Configuration file is valid<br/>
+<span class="success">[OK]</span>
+</div>
+
+<hr />
+<h2 id="44-open-firewall-ports">4.4 — Open Firewall Ports<a class="headerlink" href="#44-open-firewall-ports" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># API Server</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>firewall-cmd<span class="w"> </span>--add-port<span class="o">=</span><span class="m">6443</span>/tcp<span class="w"> </span>--zone<span class="o">=</span>internal<span class="w"> </span>--permanent
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>firewall-cmd<span class="w"> </span>--add-port<span class="o">=</span><span class="m">6443</span>/tcp<span class="w"> </span>--zone<span class="o">=</span>external<span class="w"> </span>--permanent
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Machine Config Server (internal only)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>firewall-cmd<span class="w"> </span>--add-port<span class="o">=</span><span class="m">22623</span>/tcp<span class="w"> </span>--zone<span class="o">=</span>internal<span class="w"> </span>--permanent
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># HAProxy Stats (external for monitoring)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>firewall-cmd<span class="w"> </span>--add-port<span class="o">=</span><span class="m">9000</span>/tcp<span class="w"> </span>--zone<span class="o">=</span>external<span class="w"> </span>--permanent
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># HTTP / HTTPS Ingress</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>firewall-cmd<span class="w"> </span>--add-service<span class="o">=</span>http<span class="w"> </span>--zone<span class="o">=</span>internal<span class="w"> </span>--permanent
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>firewall-cmd<span class="w"> </span>--add-service<span class="o">=</span>http<span class="w"> </span>--zone<span class="o">=</span>external<span class="w"> </span>--permanent
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>firewall-cmd<span class="w"> </span>--add-service<span class="o">=</span>https<span class="w"> </span>--zone<span class="o">=</span>internal<span class="w"> </span>--permanent
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>firewall-cmd<span class="w"> </span>--add-service<span class="o">=</span>https<span class="w"> </span>--zone<span class="o">=</span>external<span class="w"> </span>--permanent
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1"># Apply</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>firewall-cmd<span class="w"> </span>--reload
+</span></code></pre></div>
+<h3 id="verify">Verify<a class="headerlink" href="#verify" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>firewall-cmd<span class="w"> </span>--list-all<span class="w"> </span>--zone<span class="o">=</span>external
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>firewall-cmd<span class="w"> </span>--list-all<span class="w"> </span>--zone<span class="o">=</span>internal
+</span></code></pre></div>
+<hr />
+<h2 id="45-configure-selinux">4.5 — Configure SELinux<a class="headerlink" href="#45-configure-selinux" title="Permanent link">&para;</a></h2>
+<p>HAProxy needs permission to bind to non-standard ports:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>setsebool<span class="w"> </span>-P<span class="w"> </span>haproxy_connect_any<span class="w"> </span><span class="m">1</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">SELinux</p>
+<p>Without this, HAProxy will fail to start with a <code>Permission denied</code> error when binding to ports like 6443 and 22623. The <code>-P</code> flag makes the change persistent across reboots.</p>
+</div>
+<hr />
+<h2 id="46-enable-and-start-the-service">4.6 — Enable and Start the Service<a class="headerlink" href="#46-enable-and-start-the-service" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>haproxy.service
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>systemctl<span class="w"> </span>status<span class="w"> </span>haproxy.service
+</span></code></pre></div>
+<p>Expected:</p>
+<div class="cmd-output">
+● haproxy.service - HAProxy Load Balancer<br/>
+&nbsp;&nbsp;&nbsp;Loaded: loaded<br/>
+&nbsp;&nbsp;&nbsp;Active: <span class="success">active (running)</span>
+</div>
+
+<hr />
+<h2 id="47-verify-stats-dashboard">4.7 — Verify Stats Dashboard<a class="headerlink" href="#47-verify-stats-dashboard" title="Permanent link">&para;</a></h2>
+<p>Open a browser and navigate to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>http://bastion.ocp.local:9000/stats
+</span></code></pre></div>
+<p>You should see the HAProxy Stats page showing all frontends and backends. Before the SNO node is installed, all backends will show as <strong>DOWN</strong> (red) — this is expected.</p>
+<div class="admonition success">
+<p class="admonition-title">Checkpoint</p>
+<p>All Bastion infrastructure services are now configured and running:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>Firewall</strong> — Zones, NAT, policy</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>DNS</strong> — Forward, reverse, SRV records</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>DHCP</strong> — Static MAC reservation</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>HAProxy</strong> — API, MCS, Ingress proxying</li>
+</ul>
+<p>The Bastion is ready to support the OpenShift installation. 🎉</p>
+</div>
+<hr />
+<p><strong>Next:</strong> <a href="../../openshift-install/prerequisites/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> OpenShift Installation — Prerequisites</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../dhcp/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. DHCP Server">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                3. DHCP Server
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../openshift-install/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Overview
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="#" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

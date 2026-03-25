@@ -1,0 +1,2552 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Complete step-by-step guide for deploying Single Node OpenShift with Bastion Host infrastructure services">
+      
+      
+        <meta name="author" content="Bassel Emara">
+      
+      
+      
+        <link rel="prev" href="../licensing/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Automated MAS Deployment - Single Node OpenShift (SNO) Installation Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-automated-mas-deployment-ibm-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Single Node OpenShift (SNO) Installation Guide" class="md-header__button md-logo" aria-label="Single Node OpenShift (SNO) Installation Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.86 12.5A4.31 4.31 0 0 0 19 11c0-1.95-.68-3.6-2.04-4.96S13.95 4 12 4c-1.58 0-3 .47-4.25 1.43s-2.08 2.19-2.5 3.72c-1.25.28-2.29.93-3.08 1.95S1 13.28 1 14.58c0 1.51.54 2.8 1.61 3.85C3.69 19.5 5 20 6.5 20h12c1.25 0 2.31-.44 3.19-1.31.87-.88 1.31-1.94 1.31-3.19q0-1.725-1.14-3M10.5 10H9v1c0 1.11-.89 2-2 2a2 2 0 0 1 2 2v1h1.5v2H9a2 2 0 0 1-2-2v-1c0-.55-.45-1-1-1h-.5v-2H6c.55 0 1-.45 1-1v-1c0-1.1.9-2 2-2h1.5zm8 4H18c-.55 0-1 .45-1 1v1c0 1.11-.89 2-2 2h-1.5v-2H15v-1c0-1.1.9-2 2-2a2 2 0 0 1-2-2v-1h-1.5V8H15a2 2 0 0 1 2 2v1c0 .55.45 1 1 1h.5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Single Node OpenShift (SNO) Installation Guide
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Automated MAS Deployment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../architecture/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Architecture Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../bastion-setup/" class="md-tabs__link">
+          
+  
+  
+  Bastion Host Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift-install/" class="md-tabs__link">
+          
+  
+  
+  OpenShift Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../post-install/" class="md-tabs__link">
+          
+  
+  
+  Post-Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  MAS Installation
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Single Node OpenShift (SNO) Installation Guide" class="md-nav__button md-logo" aria-label="Single Node OpenShift (SNO) Installation Guide" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.86 12.5A4.31 4.31 0 0 0 19 11c0-1.95-.68-3.6-2.04-4.96S13.95 4 12 4c-1.58 0-3 .47-4.25 1.43s-2.08 2.19-2.5 3.72c-1.25.28-2.29.93-3.08 1.95S1 13.28 1 14.58c0 1.51.54 2.8 1.61 3.85C3.69 19.5 5 20 6.5 20h12c1.25 0 2.31-.44 3.19-1.31.87-.88 1.31-1.94 1.31-3.19q0-1.725-1.14-3M10.5 10H9v1c0 1.11-.89 2-2 2a2 2 0 0 1 2 2v1h1.5v2H9a2 2 0 0 1-2-2v-1c0-.55-.45-1-1-1h-.5v-2H6c.55 0 1-.45 1-1v-1c0-1.1.9-2 2-2h1.5zm8 4H18c-.55 0-1 .45-1 1v1c0 1.11-.89 2-2 2h-1.5v-2H15v-1c0-1.1.9-2 2-2a2 2 0 0 1-2-2v-1h-1.5V8H15a2 2 0 0 1 2 2v1c0 .55.45 1 1 1h.5z"/></svg>
+
+    </a>
+    Single Node OpenShift (SNO) Installation Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bastion Host Setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Bastion Host Setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bastion-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bastion-setup/firewall/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Firewall Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bastion-setup/dns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. DNS Server (BIND)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bastion-setup/dhcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. DHCP Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bastion-setup/haproxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. HAProxy Load Balancer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenShift Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/prerequisites/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Prerequisites & Client Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/install-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Assisted Installer Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift-install/bootstrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Bootstrap & Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Post-Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Smoke Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../post-install/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MAS Installation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MAS Installation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. LVM Storage Operator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../licensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Entitlement & License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Automated Deployment
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Automated Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-install-podman" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 — Install Podman
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-get-the-openshift-login-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 — Get the OpenShift Login Token
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-launch-the-mas-cli-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 — Launch the MAS CLI Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-copy-the-license-file-into-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 — Copy the License File into the Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-execute-the-mas-installer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 — Execute the MAS Installer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 — Execute the MAS Installer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-set-target-openshift-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Set Target OpenShift Cluster
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-choose-install-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Choose Install Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-ibm-maximo-operator-catalog-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: IBM Maximo Operator Catalog Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-license-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: License Terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-storage-class-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Storage Class Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-apppoint-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure AppPoint Licensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-configure-ibm-container-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Configure IBM Container Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-configure-mas-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Configure MAS Instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-9-configure-operational-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Configure Operational Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-10-certificate-authority-trust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Certificate Authority Trust
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-11-cluster-ingress-secret-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 11: Cluster Ingress Secret Override
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-12-configure-domain-certificate-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 12: Configure Domain &amp; Certificate Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-13-single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 13: Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-14-special-characters-for-user-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 14: Special Characters for User IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-15-enable-guided-tour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 15: Enable Guided Tour
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-16-application-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 16: Application Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-17-configure-maximo-manage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 17: Configure Maximo Manage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 17: Configure Maximo Manage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#171-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 — Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#172-server-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 — Server Bundles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#173-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3 — Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#174-customization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4 — Customization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#175-other-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5 — Other Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-18-configure-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 18: Configure MongoDB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-19-configure-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 19: Configure Databases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 19: Configure Databases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#191-manage-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 — Manage Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#192-installation-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 — Installation Namespace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#193195-node-affinity-cpumemory-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3–19.5 — Node Affinity, CPU/Memory, Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-20-configure-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 20: Configure Grafana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-21-configure-turbonomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 21: Configure Turbonomic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-22-additional-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 22: Additional Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-23-configure-pod-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 23: Configure Pod Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-24-non-interactive-install-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 24: Non-Interactive Install Command
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-25-review-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 25: Review Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-26-launch-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 26: Launch Install
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-monitor-via-tekton-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 — Monitor via Tekton Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-install-podman" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 — Install Podman
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-get-the-openshift-login-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 — Get the OpenShift Login Token
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-launch-the-mas-cli-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 — Launch the MAS CLI Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-copy-the-license-file-into-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 — Copy the License File into the Container
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-execute-the-mas-installer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 — Execute the MAS Installer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 — Execute the MAS Installer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-set-target-openshift-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Set Target OpenShift Cluster
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-choose-install-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Choose Install Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-ibm-maximo-operator-catalog-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: IBM Maximo Operator Catalog Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-license-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: License Terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-storage-class-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Storage Class Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-apppoint-licensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure AppPoint Licensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-configure-ibm-container-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Configure IBM Container Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-configure-mas-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Configure MAS Instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-9-configure-operational-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Configure Operational Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-10-certificate-authority-trust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Certificate Authority Trust
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-11-cluster-ingress-secret-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 11: Cluster Ingress Secret Override
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-12-configure-domain-certificate-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 12: Configure Domain &amp; Certificate Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-13-single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 13: Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-14-special-characters-for-user-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 14: Special Characters for User IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-15-enable-guided-tour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 15: Enable Guided Tour
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-16-application-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 16: Application Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-17-configure-maximo-manage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 17: Configure Maximo Manage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 17: Configure Maximo Manage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#171-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 — Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#172-server-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 — Server Bundles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#173-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3 — Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#174-customization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4 — Customization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#175-other-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5 — Other Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-18-configure-mongodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 18: Configure MongoDB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-19-configure-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 19: Configure Databases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 19: Configure Databases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#191-manage-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 — Manage Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#192-installation-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 — Installation Namespace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#193195-node-affinity-cpumemory-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3–19.5 — Node Affinity, CPU/Memory, Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-20-configure-grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 20: Configure Grafana
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-21-configure-turbonomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 21: Configure Turbonomic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-22-additional-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 22: Additional Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-23-configure-pod-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 23: Configure Pod Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-24-non-interactive-install-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 24: Non-Interactive Install Command
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-25-review-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 25: Review Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-26-launch-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 26: Launch Install
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-monitor-via-tekton-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 — Monitor via Tekton Pipelines
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="3-automated-mas-deployment-ibm-cli"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg></span> 3. Automated MAS Deployment (IBM CLI)<a class="headerlink" href="#3-automated-mas-deployment-ibm-cli" title="Permanent link">&para;</a></h1>
+<p>Deploying MAS manually through OperatorHub requires installing over 15 individual operators (Cert Manager, SLS, UDS, MongoDB, DB2, Core, Manage, etc.) and precisely sequencing their custom resources. </p>
+<p>To simplify this, IBM provides an official DevOps automation container (<code>quay.io/ibmmas/cli</code>) which uses Ansible and Tekton Pipelines to orchestrate the entire deployment gracefully.</p>
+<hr />
+<h2 id="31-install-podman">3.1 — Install Podman<a class="headerlink" href="#31-install-podman" title="Permanent link">&para;</a></h2>
+<p>The IBM MAS CLI runs inside a container. Install <strong>Podman</strong> on the Bastion host:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>dnf<span class="w"> </span>install<span class="w"> </span>podman<span class="w"> </span>-y
+</span></code></pre></div>
+<p>Expected output:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Package podman-2:5.1.2-1.el9.x86_64 is already installed.
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Dependencies resolved.
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>================================================================================
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a> Package          Architecture     Version              Repository
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>================================================================================
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>Upgrading:
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a> podman           x86_64           2:5.2.2-1.el9        appstream
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>Transaction Summary
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>================================================================================
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>Upgrade  1 Package
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>...
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>Complete!
+</span></code></pre></div></p>
+<hr />
+<h2 id="32-get-the-openshift-login-token">3.2 — Get the OpenShift Login Token<a class="headerlink" href="#32-get-the-openshift-login-token" title="Permanent link">&para;</a></h2>
+<p>The MAS CLI container needs to authenticate with the OpenShift cluster API. Retrieve, in advance, the login token from the Web Console.</p>
+<ol>
+<li>Log into the <strong>OpenShift Web Console</strong> (<code>https://console-openshift-console.apps.sno.ocp.local</code>).</li>
+<li>Click your username (<code>kubeadmin</code>) in the top right corner.</li>
+<li>Select <strong>Copy login command</strong>.</li>
+<li>Authenticate again if prompted, then click <strong>Display Token</strong>.</li>
+<li>Copy the <strong>full <code>oc login</code> command</strong> shown under "Log in with this token":</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>oc<span class="w"> </span>login<span class="w"> </span>--token<span class="o">=</span>sha256~xxxxxxxxxxxxxxxxxxxxxxxxxxxx<span class="w"> </span>--server<span class="o">=</span>https://api.sno.ocp.local:6443
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Keep this token handy</p>
+<p>You will need the <strong>Server URL</strong> and <strong>Login Token</strong> in the next step when the <code>mas install</code> wizard prompts you.</p>
+</div>
+<hr />
+<h2 id="33-launch-the-mas-cli-container">3.3 — Launch the MAS CLI Container<a class="headerlink" href="#33-launch-the-mas-cli-container" title="Permanent link">&para;</a></h2>
+<p>Run the official IBM MAS CLI container interactively. The <code>-v ~/:/mnt/home</code> flag mounts your home directory into the container so it can access your license and pull-secret files:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>podman<span class="w"> </span>run<span class="w"> </span>-ti<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span>~/:/mnt/home<span class="w"> </span>--pull<span class="w"> </span>always<span class="w"> </span>quay.io/ibmmas/cli
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Network Isolation Issue</p>
+<p>If the container <strong>cannot reach the OpenShift API</strong> (e.g., connection timeouts or DNS failures during <code>mas install</code>), the default Podman network namespace is isolated from the host network.</p>
+<p><strong>Fix:</strong> Exit the container and restart it with <code>--network host</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">exit</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>podman<span class="w"> </span>run<span class="w"> </span>-ti<span class="w"> </span>--rm<span class="w"> </span>--network<span class="w"> </span>host<span class="w"> </span>-v<span class="w"> </span>~/:/mnt/home<span class="w"> </span>--pull<span class="w"> </span>always<span class="w"> </span>quay.io/ibmmas/cli
+</span></code></pre></div>
+<p>This allows the container to use the Bastion's network stack directly, resolving DNS and reaching <code>api.sno.ocp.local:6443</code>.</p>
+</div>
+<hr />
+<h2 id="34-copy-the-license-file-into-the-container">3.4 — Copy the License File into the Container<a class="headerlink" href="#34-copy-the-license-file-into-the-container" title="Permanent link">&para;</a></h2>
+<p>Once inside the container, copy the MAS license file from your Bastion host using <code>scp</code>. The Bastion's <strong>external IP</strong> is used because the container (with <code>--network host</code>) shares the host's network:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>scp<span class="w"> </span><span class="m">10</span>.1.1.30:/root/license.dat<span class="w"> </span>.
+</span></code></pre></div>
+<p>You will be prompted to accept the SSH host key and enter the Bastion root password:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>The authenticity of host &#39;10.1.1.30 (10.1.1.30)&#39; can&#39;t be established.
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>ED25519 key fingerprint is SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Warning: Permanently added &#39;10.1.1.30&#39; (ED25519) to the list of known hosts.
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>root@10.1.1.30&#39;s password:
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>license.dat                                     100%  XXX     X.XKB/s   00:00
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replace <code>10.1.1.30</code> with your Bastion's actual external IP address. The license file will be copied to the current directory inside the container.</p>
+</div>
+<hr />
+<h2 id="35-execute-the-mas-installer">3.5 — Execute the MAS Installer<a class="headerlink" href="#35-execute-the-mas-installer" title="Permanent link">&para;</a></h2>
+<p>Once inside the container shell, trigger the interactive installation wizard:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mas<span class="w"> </span>install
+</span></code></pre></div>
+<p>The installer will walk you through <strong>26 steps</strong>. Below is the complete walkthrough with recommended answers for our SNO environment.</p>
+<hr />
+<h3 id="step-1-set-target-openshift-cluster">Step 1: Set Target OpenShift Cluster<a class="headerlink" href="#step-1-set-target-openshift-cluster" title="Permanent link">&para;</a></h3>
+<p>If you already logged in via <code>oc login</code> in step 3.3, the CLI will detect it:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Already connected to OCP Cluster:
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a> https://console-openshift-console.apps.sno.ocp.local
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Proceed with this cluster? [y/n] y
+</span></code></pre></div>
+<hr />
+<h3 id="step-2-choose-install-mode">Step 2: Choose Install Mode<a class="headerlink" href="#step-2-choose-install-mode" title="Permanent link">&para;</a></h3>
+<p>Choose <strong>Advanced</strong> to have full control over all configuration options:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Show advanced installation options? [y/n] y
+</span></code></pre></div>
+<hr />
+<h3 id="step-3-ibm-maximo-operator-catalog-selection">Step 3: IBM Maximo Operator Catalog Selection<a class="headerlink" href="#step-3-ibm-maximo-operator-catalog-selection" title="Permanent link">&para;</a></h3>
+<p>Select the latest supported catalog. The installer will show available catalogs with their release dates:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Select catalog v9-250624-amd64
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Select release 9.1
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Always use the latest catalog unless your training instructions specify otherwise.</p>
+</div>
+<hr />
+<h3 id="step-4-license-terms">Step 4: License Terms<a class="headerlink" href="#step-4-license-terms" title="Permanent link">&para;</a></h3>
+<p>Accept the IBM license agreements:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Do you accept the license terms? [y/n] y
+</span></code></pre></div>
+<hr />
+<h3 id="step-5-configure-storage-class-usage">Step 5: Configure Storage Class Usage<a class="headerlink" href="#step-5-configure-storage-class-usage" title="Permanent link">&para;</a></h3>
+<p>Enter our LVM StorageClass for <strong>both</strong> RWO and RWX:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>ReadWriteOnce (RWO) storage class lvms-vg1
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>ReadWriteMany (RWX) storage class lvms-vg1
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On SNO with LVM, we use <code>lvms-vg1</code> for both access modes since there is only a single node.</p>
+</div>
+<hr />
+<h3 id="step-6-configure-apppoint-licensing">Step 6: Configure AppPoint Licensing<a class="headerlink" href="#step-6-configure-apppoint-licensing" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>SLS Mode 1
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>License file /mascli/license.dat
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Contact e-mail address b.emara@maximo.com.sa
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>Contact first name bassel
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Contact last name emara
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>IBM Data Reporter Operator (DRO) Namespace redhat-marketplace
+</span></code></pre></div>
+<ul>
+<li><strong>SLS Mode:</strong> <code>1</code> (Cluster-Shared License)</li>
+<li><strong>License file:</strong> <code>/mascli/license.dat</code> (the file you copied via <code>scp</code> in step 3.4)</li>
+<li>Fill in your <strong>contact details</strong> as required.</li>
+</ul>
+<hr />
+<h3 id="step-7-configure-ibm-container-registry">Step 7: Configure IBM Container Registry<a class="headerlink" href="#step-7-configure-ibm-container-registry" title="Permanent link">&para;</a></h3>
+<p>Paste your <strong>IBM Entitlement Key</strong> (generated from the <a href="https://myibm.ibm.com/products-services/containerlibrary">IBM Container Library</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>IBM entitlement key ****************************************************
+</span></code></pre></div>
+<hr />
+<h3 id="step-8-configure-mas-instance">Step 8: Configure MAS Instance<a class="headerlink" href="#step-8-configure-mas-instance" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Instance ID sno
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Workspace ID sno
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>Workspace name single instance
+</span></code></pre></div>
+<hr />
+<h3 id="step-9-configure-operational-mode">Step 9: Configure Operational Mode<a class="headerlink" href="#step-9-configure-operational-mode" title="Permanent link">&para;</a></h3>
+<p>For training/demo environments, select <strong>Non-Production</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Operational Mode 2
+</span></code></pre></div>
+<hr />
+<h3 id="step-10-certificate-authority-trust">Step 10: Certificate Authority Trust<a class="headerlink" href="#step-10-certificate-authority-trust" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Trust default CAs? [y/n] y
+</span></code></pre></div>
+<hr />
+<h3 id="step-11-cluster-ingress-secret-override">Step 11: Cluster Ingress Secret Override<a class="headerlink" href="#step-11-cluster-ingress-secret-override" title="Permanent link">&para;</a></h3>
+<p>Leave empty (press Enter) to use the default:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Cluster ingress certificate secret name
+</span></code></pre></div>
+<hr />
+<h3 id="step-12-configure-domain-certificate-management">Step 12: Configure Domain &amp; Certificate Management<a class="headerlink" href="#step-12-configure-domain-certificate-management" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Configure domain &amp; certificate management? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-13-single-sign-on-sso">Step 13: Single Sign-On (SSO)<a class="headerlink" href="#step-13-single-sign-on-sso" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Configure SSO properties? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-14-special-characters-for-user-ids">Step 14: Special Characters for User IDs<a class="headerlink" href="#step-14-special-characters-for-user-ids" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Allow special characters for user IDs and usernames? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-15-enable-guided-tour">Step 15: Enable Guided Tour<a class="headerlink" href="#step-15-enable-guided-tour" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Enable Guided Tour? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-16-application-selection">Step 16: Application Selection<a class="headerlink" href="#step-16-application-selection" title="Permanent link">&para;</a></h3>
+<p>Select <strong>only Manage</strong> for our SNO deployment:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>Install IoT? [y/n] n
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>Install Manage? [y/n] y
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>Install Assist? [y/n] n
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>Install Optimizer? [y/n] n
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>Install Visual Inspection? [y/n] n
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>Install Real Estate and Facilities? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-17-configure-maximo-manage">Step 17: Configure Maximo Manage<a class="headerlink" href="#step-17-configure-maximo-manage" title="Permanent link">&para;</a></h3>
+<h4 id="171-components">17.1 — Components<a class="headerlink" href="#171-components" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Select components to enable? [y/n] n
+</span></code></pre></div>
+<p>This installs the default: <strong>Base + Health</strong>.</p>
+<h4 id="172-server-bundles">17.2 — Server Bundles<a class="headerlink" href="#172-server-bundles" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Select a server bundle configuration 1
+</span></code></pre></div>
+<p>Option <code>1</code> deploys the <strong>"all"</strong> server pod only (lower resource usage, ideal for SNO).</p>
+<h4 id="173-database">17.3 — Database<a class="headerlink" href="#173-database" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>Customize database settings? [y/n] n
+</span></code></pre></div>
+<h4 id="174-customization">17.4 — Customization<a class="headerlink" href="#174-customization" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Include customization archive? [y/n] n
+</span></code></pre></div>
+<h4 id="175-other-settings">17.5 — Other Settings<a class="headerlink" href="#175-other-settings" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Configure Additional Settings? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-18-configure-mongodb">Step 18: Configure MongoDB<a class="headerlink" href="#step-18-configure-mongodb" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>Create MongoDb cluster using MongoDb Community Edition Operator? [y/n] y
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>MongoDb namespace mongoce
+</span></code></pre></div>
+<hr />
+<h3 id="step-19-configure-databases">Step 19: Configure Databases<a class="headerlink" href="#step-19-configure-databases" title="Permanent link">&para;</a></h3>
+<h4 id="191-manage-database">19.1 — Manage Database<a class="headerlink" href="#191-manage-database" title="Permanent link">&para;</a></h4>
+<p>Create a <strong>dedicated Db2 Warehouse</strong> instance for Manage:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>Create Manage dedicated Db2 instance using the IBM Db2 Universal Operator? [y/n] y
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>Select the Manage dedicated DB2 instance type 1
+</span></code></pre></div>
+<h4 id="192-installation-namespace">19.2 — Installation Namespace<a class="headerlink" href="#192-installation-namespace" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>Install namespace db2u
+</span></code></pre></div>
+<h4 id="193195-node-affinity-cpumemory-storage">19.3–19.5 — Node Affinity, CPU/Memory, Storage<a class="headerlink" href="#193195-node-affinity-cpumemory-storage" title="Permanent link">&para;</a></h4>
+<p>Accept defaults for all:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Configure node affinity? [y/n] n
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Configure node tolerations? [y/n] n
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>Customize CPU and memory request/limit? [y/n] n
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>Customize storage capacity? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-20-configure-grafana">Step 20: Configure Grafana<a class="headerlink" href="#step-20-configure-grafana" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>Install namespace grafana5
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>Grafana storage size 10Gi
+</span></code></pre></div>
+<hr />
+<h3 id="step-21-configure-turbonomic">Step 21: Configure Turbonomic<a class="headerlink" href="#step-21-configure-turbonomic" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>Configure IBM Turbonomic integration? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-22-additional-configuration">Step 22: Additional Configuration<a class="headerlink" href="#step-22-additional-configuration" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>Use additional configurations? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-23-configure-pod-templates">Step 23: Configure Pod Templates<a class="headerlink" href="#step-23-configure-pod-templates" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>Use pod templates? [y/n] n
+</span></code></pre></div>
+<hr />
+<h3 id="step-24-non-interactive-install-command">Step 24: Non-Interactive Install Command<a class="headerlink" href="#step-24-non-interactive-install-command" title="Permanent link">&para;</a></h3>
+<p>The CLI will display a reusable non-interactive command. <strong>Save this for future re-installs:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">IBM_ENTITLEMENT_KEY</span><span class="o">=</span>x
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>mas<span class="w"> </span>install<span class="w"> </span>--mas-catalog-version<span class="w"> </span>v9-250624-amd64<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="w">  </span>--ibm-entitlement-key<span class="w"> </span><span class="nv">$IBM_ENTITLEMENT_KEY</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="w">  </span>--mas-channel<span class="w"> </span><span class="m">9</span>.1.x<span class="w"> </span>--mas-instance-id<span class="w"> </span>sno<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="w">  </span>--mas-workspace-id<span class="w"> </span>sno<span class="w"> </span>--mas-workspace-name<span class="w"> </span><span class="s2">&quot;single instance&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">  </span>--non-prod<span class="w"> </span>--disable-walkme<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="w">  </span>--storage-class-rwo<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-class-rwx<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="w">  </span>--storage-pipeline<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-accessmode<span class="w"> </span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="w">  </span>--license-file<span class="w"> </span><span class="s2">&quot;/mascli/license.dat&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a><span class="w">  </span>--uds-email<span class="w"> </span><span class="s2">&quot;b.emara@maximo.com.sa&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a><span class="w">  </span>--uds-firstname<span class="w"> </span><span class="s2">&quot;bassel&quot;</span><span class="w"> </span>--uds-lastname<span class="w"> </span><span class="s2">&quot;emara&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a><span class="w">  </span>--dro-namespace<span class="w"> </span><span class="s2">&quot;redhat-marketplace&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="w">  </span>--mongodb-namespace<span class="w"> </span><span class="s2">&quot;mongoce&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a><span class="w">  </span>--manage-channel<span class="w"> </span><span class="s2">&quot;9.1.x&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-15"><a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a><span class="w">  </span>--manage-jdbc<span class="w"> </span><span class="s2">&quot;workspace-application&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-16"><a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a><span class="w">  </span>--manage-components<span class="w"> </span><span class="s2">&quot;base=latest,health=latest&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-17"><a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a><span class="w">  </span>--manage-server-bundle-size<span class="w"> </span><span class="s2">&quot;dev&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-18"><a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a><span class="w">  </span>--db2-manage<span class="w"> </span>--db2-channel<span class="w"> </span><span class="s2">&quot;v110509.0&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-19"><a id="__codelineno-37-19" name="__codelineno-37-19" href="#__codelineno-37-19"></a><span class="w">  </span>--db2-namespace<span class="w"> </span><span class="s2">&quot;db2u&quot;</span><span class="w"> </span>--db2-type<span class="w"> </span><span class="s2">&quot;db2wh&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-37-20"><a id="__codelineno-37-20" name="__codelineno-37-20" href="#__codelineno-37-20"></a><span class="w">  </span>--accept-license<span class="w"> </span>--no-confirm
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Save This Command</p>
+<p>Copy this command and save it as a script on the Bastion. If you ever need to reinstall, you can skip all 23 prompts by running it directly.</p>
+</div>
+<hr />
+<h3 id="step-25-review-settings">Step 25: Review Settings<a class="headerlink" href="#step-25-review-settings" title="Permanent link">&para;</a></h3>
+<p>The CLI will display a full summary of all your chosen settings. Review carefully, then proceed:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>Proceed with these settings? [y/n] y
+</span></code></pre></div>
+<hr />
+<h3 id="step-26-launch-install">Step 26: Launch Install<a class="headerlink" href="#step-26-launch-install" title="Permanent link">&para;</a></h3>
+<p>The CLI submits a Tekton PipelineRun to orchestrate the entire installation:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>✅️ OpenShift Pipelines Operator is installed and ready to use
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>✅️ Namespace is ready (mas-sno-pipelines)
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>✅️ MAS CLI image deployment test completed
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>✅️ Latest Tekton definitions are installed (v14.1.0)
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a>✅️ PipelineRun for sno install submitted
+</span></code></pre></div>
+<hr />
+<h2 id="36-monitor-via-tekton-pipelines">3.6 — Monitor via Tekton Pipelines<a class="headerlink" href="#36-monitor-via-tekton-pipelines" title="Permanent link">&para;</a></h2>
+<p>The CLI will provide a direct URL to track the PipelineRun:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>View progress:
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>  https://console-openshift-console.apps.sno.ocp.local/k8s/ns/mas-sno-pipelines/tekton.dev~v1beta1~PipelineRun/sno-install-260325-0900
+</span></code></pre></div>
+<p>You can also monitor from the OpenShift Web Console manually:</p>
+<ol>
+<li>Log into the <strong>OpenShift Web Console</strong>.</li>
+<li>Navigate to <strong>Pipelines</strong> → <strong>PipelineRuns</strong> from the left sidebar.</li>
+<li>Switch the <strong>Project</strong> dropdown to <code>mas-sno-pipelines</code>.</li>
+<li>Click on the active PipelineRun to see the task breakdown.</li>
+<li>Click on any individual task to view its real-time logs.</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Expected Duration</p>
+<p>Depending on your hardware and internet speed, a full MAS Manage installation on SNO takes approximately <strong>2 to 3 hours</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Approximate Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cert Manager + Common Services</td>
+<td>10–15 min</td>
+</tr>
+<tr>
+<td>MongoDB + SLS</td>
+<td>15–20 min</td>
+</tr>
+<tr>
+<td>DB2 Warehouse</td>
+<td>30–45 min</td>
+</tr>
+<tr>
+<td>MAS Core</td>
+<td>20–30 min</td>
+</tr>
+<tr>
+<td>MAS Manage (with demo data)</td>
+<td>30–60 min</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<div class="admonition success">
+<p class="admonition-title">MAS Deployment Complete!</p>
+<p>Once the pipelines finish successfully, you will receive the Super User credentials in the terminal to access the MAS Administration portal.</p>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../licensing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 2. Entitlement &amp; License">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                2. Entitlement & License
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="#" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
