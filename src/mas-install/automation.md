@@ -77,6 +77,16 @@ podman run -ti --rm -v ~/:/mnt/home --pull always quay.io/ibmmas/cli
 
     This allows the container to use the Bastion's network stack directly, resolving DNS and reaching `api.sno.ocp.local:6443`.
 
+### Verify Container DNS
+
+Once inside the container, confirm it can resolve the OpenShift API. If you experience connection issues or resolution failures (even with `--network host`), you must manually point the container's DNS to your Bastion host (where BIND is running):
+
+```bash
+vi /etc/resolv.conf
+```
+
+Add your Bastion's IP as the primary nameserver at the top of the file (e.g., `nameserver 10.1.1.30`) and save it.
+
 ---
 
 ## 3.4 — Copy the License File into the Container
