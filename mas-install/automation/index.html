@@ -1173,6 +1173,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="3.3 — Launch the MAS CLI Container">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-container-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify Container DNS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1684,6 +1701,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="3.3 — Launch the MAS CLI Container">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-container-dns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify Container DNS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2193,18 +2227,23 @@
 </span></code></pre></div>
 <p>This allows the container to use the Bastion's network stack directly, resolving DNS and reaching <code>api.sno.ocp.local:6443</code>.</p>
 </div>
+<h3 id="verify-container-dns">Verify Container DNS<a class="headerlink" href="#verify-container-dns" title="Permanent link">&para;</a></h3>
+<p>Once inside the container, confirm it can resolve the OpenShift API. If you experience connection issues or resolution failures (even with <code>--network host</code>), you must manually point the container's DNS to your Bastion host (where BIND is running):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>vi<span class="w"> </span>/etc/resolv.conf
+</span></code></pre></div>
+<p>Add your Bastion's IP as the primary nameserver at the top of the file (e.g., <code>nameserver 10.1.1.30</code>) and save it.</p>
 <hr />
 <h2 id="34-copy-the-license-file-into-the-container">3.4 — Copy the License File into the Container<a class="headerlink" href="#34-copy-the-license-file-into-the-container" title="Permanent link">&para;</a></h2>
 <p>Once inside the container, copy the MAS license file from your Bastion host using <code>scp</code>. The Bastion's <strong>external IP</strong> is used because the container (with <code>--network host</code>) shares the host's network:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>scp<span class="w"> </span><span class="m">10</span>.1.1.30:/root/license.dat<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>scp<span class="w"> </span><span class="m">10</span>.1.1.30:/root/license.dat<span class="w"> </span>.
 </span></code></pre></div>
 <p>You will be prompted to accept the SSH host key and enter the Bastion root password:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>The authenticity of host &#39;10.1.1.30 (10.1.1.30)&#39; can&#39;t be established.
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>ED25519 key fingerprint is SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Warning: Permanently added &#39;10.1.1.30&#39; (ED25519) to the list of known hosts.
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>root@10.1.1.30&#39;s password:
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>license.dat                                     100%  XXX     X.XKB/s   00:00
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>The authenticity of host &#39;10.1.1.30 (10.1.1.30)&#39; can&#39;t be established.
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>ED25519 key fingerprint is SHA256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Warning: Permanently added &#39;10.1.1.30&#39; (ED25519) to the list of known hosts.
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>root@10.1.1.30&#39;s password:
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>license.dat                                     100%  XXX     X.XKB/s   00:00
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2213,27 +2252,27 @@
 <hr />
 <h2 id="35-execute-the-mas-installer">3.5 — Execute the MAS Installer<a class="headerlink" href="#35-execute-the-mas-installer" title="Permanent link">&para;</a></h2>
 <p>Once inside the container shell, trigger the interactive installation wizard:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mas<span class="w"> </span>install
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mas<span class="w"> </span>install
 </span></code></pre></div>
 <p>The installer will walk you through <strong>26 steps</strong>. Below is the complete walkthrough with recommended answers for our SNO environment.</p>
 <hr />
 <h3 id="step-1-set-target-openshift-cluster">Step 1: Set Target OpenShift Cluster<a class="headerlink" href="#step-1-set-target-openshift-cluster" title="Permanent link">&para;</a></h3>
 <p>If you already logged in via <code>oc login</code> in step 3.3, the CLI will detect it:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Already connected to OCP Cluster:
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a> https://console-openshift-console.apps.sno.ocp.local
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Proceed with this cluster? [y/n] y
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Already connected to OCP Cluster:
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a> https://console-openshift-console.apps.sno.ocp.local
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Proceed with this cluster? [y/n] y
 </span></code></pre></div>
 <hr />
 <h3 id="step-2-choose-install-mode">Step 2: Choose Install Mode<a class="headerlink" href="#step-2-choose-install-mode" title="Permanent link">&para;</a></h3>
 <p>Choose <strong>Advanced</strong> to have full control over all configuration options:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Show advanced installation options? [y/n] y
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Show advanced installation options? [y/n] y
 </span></code></pre></div>
 <hr />
 <h3 id="step-3-ibm-maximo-operator-catalog-selection">Step 3: IBM Maximo Operator Catalog Selection<a class="headerlink" href="#step-3-ibm-maximo-operator-catalog-selection" title="Permanent link">&para;</a></h3>
 <p>Select the latest supported catalog. The installer will show available catalogs with their release dates:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Select catalog v9-250624-amd64
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Select release 9.1
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Select catalog v9-250624-amd64
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Select release 9.1
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -2242,13 +2281,13 @@
 <hr />
 <h3 id="step-4-license-terms">Step 4: License Terms<a class="headerlink" href="#step-4-license-terms" title="Permanent link">&para;</a></h3>
 <p>Accept the IBM license agreements:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Do you accept the license terms? [y/n] y
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Do you accept the license terms? [y/n] y
 </span></code></pre></div>
 <hr />
 <h3 id="step-5-configure-storage-class-usage">Step 5: Configure Storage Class Usage<a class="headerlink" href="#step-5-configure-storage-class-usage" title="Permanent link">&para;</a></h3>
 <p>Enter our LVM StorageClass for <strong>both</strong> RWO and RWX:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>ReadWriteOnce (RWO) storage class lvms-vg1
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>ReadWriteMany (RWX) storage class lvms-vg1
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ReadWriteOnce (RWO) storage class lvms-vg1
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>ReadWriteMany (RWX) storage class lvms-vg1
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2256,12 +2295,12 @@
 </div>
 <hr />
 <h3 id="step-6-configure-apppoint-licensing">Step 6: Configure AppPoint Licensing<a class="headerlink" href="#step-6-configure-apppoint-licensing" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>SLS Mode 1
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>License file /mascli/license.dat
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Contact e-mail address b.emara@maximo.com.sa
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>Contact first name bassel
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>Contact last name emara
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>IBM Data Reporter Operator (DRO) Namespace redhat-marketplace
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>SLS Mode 1
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>License file /mascli/license.dat
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>Contact e-mail address b.emara@maximo.com.sa
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Contact first name bassel
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>Contact last name emara
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>IBM Data Reporter Operator (DRO) Namespace redhat-marketplace
 </span></code></pre></div>
 <ul>
 <li><strong>SLS Mode:</strong> <code>1</code> (Cluster-Shared License)</li>
@@ -2271,135 +2310,135 @@
 <hr />
 <h3 id="step-7-configure-ibm-container-registry">Step 7: Configure IBM Container Registry<a class="headerlink" href="#step-7-configure-ibm-container-registry" title="Permanent link">&para;</a></h3>
 <p>Paste your <strong>IBM Entitlement Key</strong> (generated from the <a href="https://myibm.ibm.com/products-services/containerlibrary">IBM Container Library</a>):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>IBM entitlement key ****************************************************
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>IBM entitlement key ****************************************************
 </span></code></pre></div>
 <hr />
 <h3 id="step-8-configure-mas-instance">Step 8: Configure MAS Instance<a class="headerlink" href="#step-8-configure-mas-instance" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Instance ID sno
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Workspace ID sno
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>Workspace name single instance
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Instance ID sno
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Workspace ID sno
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>Workspace name single instance
 </span></code></pre></div>
 <hr />
 <h3 id="step-9-configure-operational-mode">Step 9: Configure Operational Mode<a class="headerlink" href="#step-9-configure-operational-mode" title="Permanent link">&para;</a></h3>
 <p>For training/demo environments, select <strong>Non-Production</strong>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Operational Mode 2
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Operational Mode 2
 </span></code></pre></div>
 <hr />
 <h3 id="step-10-certificate-authority-trust">Step 10: Certificate Authority Trust<a class="headerlink" href="#step-10-certificate-authority-trust" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Trust default CAs? [y/n] y
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Trust default CAs? [y/n] y
 </span></code></pre></div>
 <hr />
 <h3 id="step-11-cluster-ingress-secret-override">Step 11: Cluster Ingress Secret Override<a class="headerlink" href="#step-11-cluster-ingress-secret-override" title="Permanent link">&para;</a></h3>
 <p>Leave empty (press Enter) to use the default:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Cluster ingress certificate secret name
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Cluster ingress certificate secret name
 </span></code></pre></div>
 <hr />
 <h3 id="step-12-configure-domain-certificate-management">Step 12: Configure Domain &amp; Certificate Management<a class="headerlink" href="#step-12-configure-domain-certificate-management" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>Configure domain &amp; certificate management? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Configure domain &amp; certificate management? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-13-single-sign-on-sso">Step 13: Single Sign-On (SSO)<a class="headerlink" href="#step-13-single-sign-on-sso" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Configure SSO properties? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Configure SSO properties? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-14-special-characters-for-user-ids">Step 14: Special Characters for User IDs<a class="headerlink" href="#step-14-special-characters-for-user-ids" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Allow special characters for user IDs and usernames? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Allow special characters for user IDs and usernames? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-15-enable-guided-tour">Step 15: Enable Guided Tour<a class="headerlink" href="#step-15-enable-guided-tour" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>Enable Guided Tour? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>Enable Guided Tour? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-16-application-selection">Step 16: Application Selection<a class="headerlink" href="#step-16-application-selection" title="Permanent link">&para;</a></h3>
 <p>Select <strong>only Manage</strong> for our SNO deployment:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>Install IoT? [y/n] n
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>Install Manage? [y/n] y
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>Install Assist? [y/n] n
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>Install Optimizer? [y/n] n
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>Install Visual Inspection? [y/n] n
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>Install Real Estate and Facilities? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Install IoT? [y/n] n
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>Install Manage? [y/n] y
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>Install Assist? [y/n] n
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>Install Optimizer? [y/n] n
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>Install Visual Inspection? [y/n] n
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>Install Real Estate and Facilities? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-17-configure-maximo-manage">Step 17: Configure Maximo Manage<a class="headerlink" href="#step-17-configure-maximo-manage" title="Permanent link">&para;</a></h3>
 <h4 id="171-components">17.1 — Components<a class="headerlink" href="#171-components" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Select components to enable? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Select components to enable? [y/n] n
 </span></code></pre></div>
 <p>This installs the default: <strong>Base + Health</strong>.</p>
 <h4 id="172-server-bundles">17.2 — Server Bundles<a class="headerlink" href="#172-server-bundles" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Select a server bundle configuration 1
+<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>Select a server bundle configuration 1
 </span></code></pre></div>
 <p>Option <code>1</code> deploys the <strong>"all"</strong> server pod only (lower resource usage, ideal for SNO).</p>
 <h4 id="173-database">17.3 — Database<a class="headerlink" href="#173-database" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>Customize database settings? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Customize database settings? [y/n] n
 </span></code></pre></div>
 <h4 id="174-customization">17.4 — Customization<a class="headerlink" href="#174-customization" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Include customization archive? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Include customization archive? [y/n] n
 </span></code></pre></div>
 <h4 id="175-other-settings">17.5 — Other Settings<a class="headerlink" href="#175-other-settings" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Configure Additional Settings? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>Configure Additional Settings? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-18-configure-mongodb">Step 18: Configure MongoDB<a class="headerlink" href="#step-18-configure-mongodb" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>Create MongoDb cluster using MongoDb Community Edition Operator? [y/n] y
-</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>MongoDb namespace mongoce
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>Create MongoDb cluster using MongoDb Community Edition Operator? [y/n] y
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>MongoDb namespace mongoce
 </span></code></pre></div>
 <hr />
 <h3 id="step-19-configure-databases">Step 19: Configure Databases<a class="headerlink" href="#step-19-configure-databases" title="Permanent link">&para;</a></h3>
 <h4 id="191-manage-database">19.1 — Manage Database<a class="headerlink" href="#191-manage-database" title="Permanent link">&para;</a></h4>
 <p>Create a <strong>dedicated Db2 Warehouse</strong> instance for Manage:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>Create Manage dedicated Db2 instance using the IBM Db2 Universal Operator? [y/n] y
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>Select the Manage dedicated DB2 instance type 1
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>Create Manage dedicated Db2 instance using the IBM Db2 Universal Operator? [y/n] y
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>Select the Manage dedicated DB2 instance type 1
 </span></code></pre></div>
 <h4 id="192-installation-namespace">19.2 — Installation Namespace<a class="headerlink" href="#192-installation-namespace" title="Permanent link">&para;</a></h4>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>Install namespace db2u
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Install namespace db2u
 </span></code></pre></div>
 <h4 id="193195-node-affinity-cpumemory-storage">19.3–19.5 — Node Affinity, CPU/Memory, Storage<a class="headerlink" href="#193195-node-affinity-cpumemory-storage" title="Permanent link">&para;</a></h4>
 <p>Accept defaults for all:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Configure node affinity? [y/n] n
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>Configure node tolerations? [y/n] n
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>Customize CPU and memory request/limit? [y/n] n
-</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>Customize storage capacity? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>Configure node affinity? [y/n] n
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>Configure node tolerations? [y/n] n
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>Customize CPU and memory request/limit? [y/n] n
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>Customize storage capacity? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-20-configure-grafana">Step 20: Configure Grafana<a class="headerlink" href="#step-20-configure-grafana" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>Install namespace grafana5
-</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>Grafana storage size 10Gi
+<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>Install namespace grafana5
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>Grafana storage size 10Gi
 </span></code></pre></div>
 <hr />
 <h3 id="step-21-configure-turbonomic">Step 21: Configure Turbonomic<a class="headerlink" href="#step-21-configure-turbonomic" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>Configure IBM Turbonomic integration? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>Configure IBM Turbonomic integration? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-22-additional-configuration">Step 22: Additional Configuration<a class="headerlink" href="#step-22-additional-configuration" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>Use additional configurations? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>Use additional configurations? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-23-configure-pod-templates">Step 23: Configure Pod Templates<a class="headerlink" href="#step-23-configure-pod-templates" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>Use pod templates? [y/n] n
+<div class="language-text highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>Use pod templates? [y/n] n
 </span></code></pre></div>
 <hr />
 <h3 id="step-24-non-interactive-install-command">Step 24: Non-Interactive Install Command<a class="headerlink" href="#step-24-non-interactive-install-command" title="Permanent link">&para;</a></h3>
 <p>The CLI will display a reusable non-interactive command. <strong>Save this for future re-installs:</strong></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">IBM_ENTITLEMENT_KEY</span><span class="o">=</span>x
-</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>mas<span class="w"> </span>install<span class="w"> </span>--mas-catalog-version<span class="w"> </span>v9-250624-amd64<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="w">  </span>--ibm-entitlement-key<span class="w"> </span><span class="nv">$IBM_ENTITLEMENT_KEY</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="w">  </span>--mas-channel<span class="w"> </span><span class="m">9</span>.1.x<span class="w"> </span>--mas-instance-id<span class="w"> </span>sno<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="w">  </span>--mas-workspace-id<span class="w"> </span>sno<span class="w"> </span>--mas-workspace-name<span class="w"> </span><span class="s2">&quot;single instance&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-6"><a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w">  </span>--non-prod<span class="w"> </span>--disable-walkme<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-7"><a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="w">  </span>--storage-class-rwo<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-class-rwx<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-8"><a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="w">  </span>--storage-pipeline<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-accessmode<span class="w"> </span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-9"><a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="w">  </span>--license-file<span class="w"> </span><span class="s2">&quot;/mascli/license.dat&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-10"><a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a><span class="w">  </span>--uds-email<span class="w"> </span><span class="s2">&quot;b.emara@maximo.com.sa&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-11"><a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a><span class="w">  </span>--uds-firstname<span class="w"> </span><span class="s2">&quot;bassel&quot;</span><span class="w"> </span>--uds-lastname<span class="w"> </span><span class="s2">&quot;emara&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-12"><a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a><span class="w">  </span>--dro-namespace<span class="w"> </span><span class="s2">&quot;redhat-marketplace&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-13"><a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="w">  </span>--mongodb-namespace<span class="w"> </span><span class="s2">&quot;mongoce&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-14"><a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a><span class="w">  </span>--manage-channel<span class="w"> </span><span class="s2">&quot;9.1.x&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-15"><a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a><span class="w">  </span>--manage-jdbc<span class="w"> </span><span class="s2">&quot;workspace-application&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-16"><a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a><span class="w">  </span>--manage-components<span class="w"> </span><span class="s2">&quot;base=latest,health=latest&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-17"><a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a><span class="w">  </span>--manage-server-bundle-size<span class="w"> </span><span class="s2">&quot;dev&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-18"><a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a><span class="w">  </span>--db2-manage<span class="w"> </span>--db2-channel<span class="w"> </span><span class="s2">&quot;v110509.0&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-19"><a id="__codelineno-37-19" name="__codelineno-37-19" href="#__codelineno-37-19"></a><span class="w">  </span>--db2-namespace<span class="w"> </span><span class="s2">&quot;db2u&quot;</span><span class="w"> </span>--db2-type<span class="w"> </span><span class="s2">&quot;db2wh&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-37-20"><a id="__codelineno-37-20" name="__codelineno-37-20" href="#__codelineno-37-20"></a><span class="w">  </span>--accept-license<span class="w"> </span>--no-confirm
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">IBM_ENTITLEMENT_KEY</span><span class="o">=</span>x
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>mas<span class="w"> </span>install<span class="w"> </span>--mas-catalog-version<span class="w"> </span>v9-250624-amd64<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w">  </span>--ibm-entitlement-key<span class="w"> </span><span class="nv">$IBM_ENTITLEMENT_KEY</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="w">  </span>--mas-channel<span class="w"> </span><span class="m">9</span>.1.x<span class="w"> </span>--mas-instance-id<span class="w"> </span>sno<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w">  </span>--mas-workspace-id<span class="w"> </span>sno<span class="w"> </span>--mas-workspace-name<span class="w"> </span><span class="s2">&quot;single instance&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w">  </span>--non-prod<span class="w"> </span>--disable-walkme<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w">  </span>--storage-class-rwo<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-class-rwx<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="w">  </span>--storage-pipeline<span class="w"> </span><span class="s2">&quot;lvms-vg1&quot;</span><span class="w"> </span>--storage-accessmode<span class="w"> </span><span class="s2">&quot;ReadWriteOnce&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="w">  </span>--license-file<span class="w"> </span><span class="s2">&quot;/mascli/license.dat&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="w">  </span>--uds-email<span class="w"> </span><span class="s2">&quot;b.emara@maximo.com.sa&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="w">  </span>--uds-firstname<span class="w"> </span><span class="s2">&quot;bassel&quot;</span><span class="w"> </span>--uds-lastname<span class="w"> </span><span class="s2">&quot;emara&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="w">  </span>--dro-namespace<span class="w"> </span><span class="s2">&quot;redhat-marketplace&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a><span class="w">  </span>--mongodb-namespace<span class="w"> </span><span class="s2">&quot;mongoce&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a><span class="w">  </span>--manage-channel<span class="w"> </span><span class="s2">&quot;9.1.x&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a><span class="w">  </span>--manage-jdbc<span class="w"> </span><span class="s2">&quot;workspace-application&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-16"><a id="__codelineno-38-16" name="__codelineno-38-16" href="#__codelineno-38-16"></a><span class="w">  </span>--manage-components<span class="w"> </span><span class="s2">&quot;base=latest,health=latest&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-17"><a id="__codelineno-38-17" name="__codelineno-38-17" href="#__codelineno-38-17"></a><span class="w">  </span>--manage-server-bundle-size<span class="w"> </span><span class="s2">&quot;dev&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-18"><a id="__codelineno-38-18" name="__codelineno-38-18" href="#__codelineno-38-18"></a><span class="w">  </span>--db2-manage<span class="w"> </span>--db2-channel<span class="w"> </span><span class="s2">&quot;v110509.0&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-19"><a id="__codelineno-38-19" name="__codelineno-38-19" href="#__codelineno-38-19"></a><span class="w">  </span>--db2-namespace<span class="w"> </span><span class="s2">&quot;db2u&quot;</span><span class="w"> </span>--db2-type<span class="w"> </span><span class="s2">&quot;db2wh&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-38-20"><a id="__codelineno-38-20" name="__codelineno-38-20" href="#__codelineno-38-20"></a><span class="w">  </span>--accept-license<span class="w"> </span>--no-confirm
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Save This Command</p>
@@ -2408,22 +2447,22 @@
 <hr />
 <h3 id="step-25-review-settings">Step 25: Review Settings<a class="headerlink" href="#step-25-review-settings" title="Permanent link">&para;</a></h3>
 <p>The CLI will display a full summary of all your chosen settings. Review carefully, then proceed:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>Proceed with these settings? [y/n] y
+<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>Proceed with these settings? [y/n] y
 </span></code></pre></div>
 <hr />
 <h3 id="step-26-launch-install">Step 26: Launch Install<a class="headerlink" href="#step-26-launch-install" title="Permanent link">&para;</a></h3>
 <p>The CLI submits a Tekton PipelineRun to orchestrate the entire installation:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>✅️ OpenShift Pipelines Operator is installed and ready to use
-</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>✅️ Namespace is ready (mas-sno-pipelines)
-</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>✅️ MAS CLI image deployment test completed
-</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>✅️ Latest Tekton definitions are installed (v14.1.0)
-</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a>✅️ PipelineRun for sno install submitted
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>✅️ OpenShift Pipelines Operator is installed and ready to use
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>✅️ Namespace is ready (mas-sno-pipelines)
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>✅️ MAS CLI image deployment test completed
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>✅️ Latest Tekton definitions are installed (v14.1.0)
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>✅️ PipelineRun for sno install submitted
 </span></code></pre></div>
 <hr />
 <h2 id="36-monitor-via-tekton-pipelines">3.6 — Monitor via Tekton Pipelines<a class="headerlink" href="#36-monitor-via-tekton-pipelines" title="Permanent link">&para;</a></h2>
 <p>The CLI will provide a direct URL to track the PipelineRun:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>View progress:
-</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>  https://console-openshift-console.apps.sno.ocp.local/k8s/ns/mas-sno-pipelines/tekton.dev~v1beta1~PipelineRun/sno-install-260325-0900
+<div class="language-text highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>View progress:
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>  https://console-openshift-console.apps.sno.ocp.local/k8s/ns/mas-sno-pipelines/tekton.dev~v1beta1~PipelineRun/sno-install-260325-0900
 </span></code></pre></div>
 <p>You can also monitor from the OpenShift Web Console manually:</p>
 <ol>
@@ -2478,10 +2517,10 @@
 <ol>
 <li>Open a new terminal and SSH into your Bastion host.</li>
 <li>Find the running MAS CLI container ID:
-   <div class="language-bash highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>podman<span class="w"> </span>ps
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>podman<span class="w"> </span>ps
 </span></code></pre></div></li>
 <li>Execute a <code>tail</code> command against the container (replace <code>15e8d9dc1dbf</code> with your actual container ID):
-   <div class="language-bash highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>podman<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>15e8d9dc1dbf<span class="w"> </span>tail<span class="w"> </span>-f<span class="w"> </span>mas.log
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>podman<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>15e8d9dc1dbf<span class="w"> </span>tail<span class="w"> </span>-f<span class="w"> </span>mas.log
 </span></code></pre></div></li>
 </ol>
 
