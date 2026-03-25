@@ -487,3 +487,19 @@ You can also monitor from the OpenShift Web Console manually:
 !!! success "MAS Deployment Complete!"
     Once the pipelines finish successfully, you will receive the Super User credentials in the terminal to access the MAS Administration portal.
 
+---
+
+## 3.7 — Troubleshooting the Installer Container
+
+If the interactive terminal becomes unresponsive, or if you need to view the raw execution logs while the wizard is running or after it finishes, you can hook into the running container from a **second SSH session**.
+
+1. Open a new terminal and SSH into your Bastion host.
+2. Find the running MAS CLI container ID:
+   ```bash
+   podman ps
+   ```
+3. Execute a `tail` command against the container (replace `15e8d9dc1dbf` with your actual container ID):
+   ```bash
+   podman exec -it 15e8d9dc1dbf tail -f mas.log
+   ```
+
